@@ -9,7 +9,7 @@ using System.Text;
 
 namespace bd.log.servicios.Servicios
 {
-    public class LogCategoryService : ILogCategoryService
+   public class LogLevelService: ILogLevelService
     {
         #region Atributos
 
@@ -24,7 +24,7 @@ namespace bd.log.servicios.Servicios
 
         #region Constructores
 
-        public LogCategoryService(LogDbContext db)
+        public LogLevelService(LogDbContext db)
         {
             this.db = db;
 
@@ -34,15 +34,15 @@ namespace bd.log.servicios.Servicios
 
         #region Metodos
 
-        public Response Crear(LogCategory logCategory)
+        public Response Crear(LogLevel logLevel)
         {
             try
             {
-                var respuesta = Existe(logCategory);
+                var respuesta = Existe(logLevel);
                 if (!respuesta.IsSuccess)
                 {
 
-                    db.Add(logCategory);
+                    db.Add(logLevel);
                     db.SaveChanges();
                     return new Response
                     {
@@ -69,14 +69,14 @@ namespace bd.log.servicios.Servicios
             }
         }
 
-        public Response Editar(LogCategory logCategory)
+        public Response Editar(LogLevel logLevel)
         {
             try
             {
-                var respuesta = Existe(logCategory);
+                var respuesta = Existe(logLevel);
                 if (!respuesta.IsSuccess)
                 {
-                    var respuestalogCategory = (LogCategory)respuesta.Resultado;
+                    var respuestalogCategory = (LogLevel)respuesta.Resultado;
                     db.Update(respuestalogCategory);
                     db.SaveChanges();
                     return new Response
@@ -106,11 +106,11 @@ namespace bd.log.servicios.Servicios
             }
         }
 
-        public Response Eliminar(int logCategoryId)
+        public Response Eliminar(int LogLevelId)
         {
             try
             {
-                var respuestalogCategory = db.LogCategories.Find(logCategoryId);
+                var respuestalogCategory = db.LogLevels.Find(LogLevelId);
                 if (respuestalogCategory != null)
                 {
                     db.Remove(respuestalogCategory);
@@ -138,9 +138,9 @@ namespace bd.log.servicios.Servicios
             }
         }
 
-        public Response Existe(LogCategory logCategory)
+        public Response Existe(LogLevel logLevel)
         {
-            var respuestaPais = db.LogCategories.Where(p => p.Name == logCategory.Name).FirstOrDefault();
+            var respuestaPais = db.LogLevels.Where(p => p.Name == logLevel.Name).FirstOrDefault();
             if (respuestaPais != null)
             {
                 return new Response
@@ -156,21 +156,20 @@ namespace bd.log.servicios.Servicios
             {
                 IsSuccess = false,
                 Message = "No existe país...",
-                Resultado = db.LogCategories.Where(p => p.LogCategoryId == logCategory.LogCategoryId).FirstOrDefault(),
+                Resultado = db.LogLevels.Where(p => p.LogLevelId == logLevel.LogLevelId).FirstOrDefault(),
             };
         }
 
-        public LogCategory GetLogCategory(int logCategoryId)
+        public LogLevel GetLogLevel(int LogLevelId)
         {
-            return db.LogCategories.Where(c => c.LogCategoryId == logCategoryId).FirstOrDefault();
+            return db.LogLevels.Where(c => c.LogLevelId == LogLevelId).FirstOrDefault();
         }
 
-        public List<LogCategory> GetLogCategories()
+        public List<LogLevel> GetLogLevels()
         {
-            return db.LogCategories.OrderBy(p => p.Name).ToList();
+            return db.LogLevels.OrderBy(p => p.Name).ToList();
         }
 
         #endregion
-
     }
 }
