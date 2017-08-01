@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\API\" />
+    <Folder Include="Views\ConsultasLogs\" />
   </ItemGroup>
 
 </Project>

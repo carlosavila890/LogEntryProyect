@@ -8,7 +8,7 @@ using System.Text;
 
 namespace bd.log.servicios.Servicios
 {
-    class NetworkService : INetworkService
+  public  class NetworkService : INetworkService
     {
         public string GetRemoteIpClientAddress()
         {

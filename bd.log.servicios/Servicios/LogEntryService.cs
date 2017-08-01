@@ -62,7 +62,7 @@ namespace bd.log.servicios.Servicios
 
             try
             {
-                logEntries = db.LogEntries.ToList();
+                logEntries = db.LogEntries.Include(p=>p.LogCategory).Include(p=>p.LogLevel).ToList();
             }
             catch (Exception ex)
             {
