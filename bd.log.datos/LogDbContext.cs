@@ -363,6 +363,7 @@ namespace bd.log.datos
                             UserName = "Nestor 11"
                         });
                     }
+                    this.SaveChangesAsync();
                 }
                 
             }
