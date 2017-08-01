@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\bd.log.datos\bd.log.datos.csproj" />
+    <ProjectReference Include="..\bd.log.entidades\bd.log.entidades.csproj" />
+    <ProjectReference Include="..\bd.log.utils\bd.log.utils.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  bd.log.web:
+    image: bd.log.web
+    build:
+      context: ./bd.log.web
+      dockerfile: Dockerfile
