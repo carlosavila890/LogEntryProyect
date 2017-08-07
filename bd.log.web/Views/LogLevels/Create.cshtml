@@ -8,7 +8,8 @@
 
 <form asp-action="Create">
     <div class="form-horizontal">
-        <h4>LogLevel</h4>
+        <h4> @ViewData["Error"] </h4>
+        <p></p>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">

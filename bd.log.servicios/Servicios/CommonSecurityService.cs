@@ -1,19 +1,20 @@
-﻿using bd.log.datos;
+﻿ 
 using bd.log.entidades;
+using bd.log.entidades.ObjectTranfer;
 using bd.log.servicios.Interfaces;
 using bd.log.utils;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace bd.log.servicios.Servicios
 {
     public class CommonSecurityService : ICommonSecurityService
     {
         #region Attributes
-
-        LogDbContext db;
-        private readonly INetworkService networkService;
-
         #endregion
 
         #region Services
@@ -24,71 +25,44 @@ namespace bd.log.servicios.Servicios
 
         #region Constructors
 
-        public CommonSecurityService(LogDbContext db, INetworkService networkService)
+        public CommonSecurityService( )
         {
-            this.db = db;
-            this.networkService = networkService;
+          
         }
 
         #endregion
 
         #region Methods
 
-        public string GetAllErrorMsq(Exception e)
+        public async Task<Response> SaveLogEntry(LogEntryTranfer logEntryTranfer)
         {
-            string strError = string.Empty;
-
-            //Mientras la Excepción interior no sea igual a null, se obtiene el mensaje asociado a la misma
-            //y se agrega a la lista de mensajes asociados a la Excepciones exteriores
-            while (e != null)
-            {
-                strError += e.Message + Environment.NewLine;
-                e = e.InnerException;
-            }
-            return strError;
-        }
-
-        public Response SaveLogEntry(string logLevelShortName, string logCategoryParametre, Exception exceptionTrace, string message, string entityID,string userName,string applicationName)
-        {
-            Response response;
             try
             {
-                var logLevelID = db.LogLevels.FirstOrDefault(l => l.ShortName.Contains(logLevelShortName)).LogLevelId;
-                var logCategoryID = db.LogCategories.FirstOrDefault(l => l.ParameterValue.Contains(logCategoryParametre)).LogCategoryId;
-                
-                db.Add(new LogEntry
+                using (HttpClient cliente = new HttpClient())
                 {
-                    UserName = userName,
-                    ApplicationName=applicationName,
-                    ExceptionTrace = (exceptionTrace != null) ? GetAllErrorMsq(exceptionTrace) : null,
-                    LogCategoryId = logCategoryID,
-                    LogLevelId = logLevelID,
-                    LogDate = DateTime.Now,
-                    MachineIP = networkService.GetRemoteIpClientAddress(),
-                    MachineName = networkService.GetClientMachineName(),
-                    Message = message,
-                    ObjEntityId = entityID
-                });
+                    var request = JsonConvert.SerializeObject(logEntryTranfer);
+                    var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                db.SaveChanges();
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
+
+                    var url = "/api/LogEntries/InsertarLonEntry";
+                    var respuesta = await cliente.PostAsync(url, content);
+
+                    var resultado = await respuesta.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Response>(resultado);
+                    return response;
+
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                response = new Response
+                return new Response
                 {
-                    IsSuccess = true,
-                    Message = ex.Message,
+                    IsSuccess = false,
+                    Message = "Error",
                 };
-                return response;
             }
 
-            response = new Response
-            {
-                IsSuccess = true,
-                Message = "Ok",
-            };
-
-            return response;
         }
 
         #endregion

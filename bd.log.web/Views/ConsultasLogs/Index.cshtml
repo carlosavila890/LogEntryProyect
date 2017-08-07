@@ -1,4 +1,4 @@
-@model bd.log.entidades.ViewModels.LogEntryViewModel
+@model   bd.log.entidades.ViewModels.LogEntryViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -6,39 +6,120 @@
 
 <h2>Index</h2>
 
-<select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.Id">
-    <option value="0" > Vacio</option>
-</select>
+
+
+<div class="widget-body no-padding">
+    <form asp-action="ConsultaFiltrada" id="checkout-form" class="smart-form" novalidate="novalidate">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <fieldset>
+            <div class="row">
+                <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.ShortName">
+                    <option value="0">Seleccione Nombre Corto</option>
+                </select>
+                <select asp-for="LogCategoryId" asp-class="form-control" asp-items="ViewBag.Name">
+                    <option value="0">Seleccione Categoria</option>
+                </select>
+                <label class="input">
+                        <input asp-for="MachineName" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.MachineName)" />
+                        <span asp-validation-for="MachineName" class="text-danger"></span>
+                  </label>
+                <label class="input">
+                    <input asp-for="MachineIP" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.MachineIP)" />
+                    <span asp-validation-for="MachineIP" class="text-danger"></span>
+                </label>
+                <label class="input">
+                    <input asp-for="UserName" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.UserName)" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </label>
+                <label class="input">
+                    <input asp-for="ApplicationName" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.ApplicationName)" />
+                    <span asp-validation-for="ApplicationName" class="text-danger"></span>
+                </label>
+            
+               
+
+              </div>
+                @*
+            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.ApplicationName">
+                <option value="0">Seleccione Nombre Aplicacion</option>
+            </select>
+            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.UserName">
+                <option value="0">Seleccione Nombre de Usuario</option>
+            </select>
+            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.MachineName">
+                <option value="0">Seleccione Nombre de la Máquina</option>
+            </select>
+            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.MachineIP">
+                <option value="0">Seleccione IP de la máquina</option>
+            </select>*@
+                <footer>
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-offset-12">
+                            <input type="submit" value="Buscar" class="btn btn-primary" />
+
+                        </div>
+                    </div>
+                    <span class="text-danger">@ViewData["Error"]</span>
+                </footer>
+</fieldset>
+    </form>
+</div>
 
 <p>
     <a asp-action="Create">Nuevo</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().ApplicationName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().LogDate)
-            </th>
-           
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.LogEntrys)
-        {
+<div>
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ApplicationName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LogDate)
-                </td>
-               
-               
+                <th>
+                    @Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().ApplicationName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().LogDate)
+                </th>
+
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < 10; i++)
+            {
+
+            
+       
+                <tr>
+                    <td>
+                       
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.LogEntrys.ElementAt(i).LogDate)
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    </div>
+</div>
+
+
+
+ @section Scripts {
+
+             
+<script type="text/javascript" src="~/js/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="~/js/jquery.tablesorter.pager.js"></script>
+
+<script type="text/javascript">
+ $(window).load(function () {
+    $(function () {
+        $("table.tablesorter").tablesorter({ widthFixed: true, sortList: [[0, 0]] })
+            .tablesorterPager({ container: $("#pager"), size: $(".pagesize option:selected").val() });
+        });
+  });
+</script>
+   
+  }

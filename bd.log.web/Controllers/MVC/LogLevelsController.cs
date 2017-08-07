@@ -5,43 +5,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using bd.log.datos;
+ 
 using bd.log.entidades;
+using bd.log.servicios.Interfaces;
 
 namespace bd.log.web.Controllers.MVC
 {
     public class LogLevelsController : Controller
     {
-        private readonly LogDbContext _context;
 
-        public LogLevelsController(LogDbContext context)
+        private readonly ILogLevelService logLevelServicio;
+        private readonly ICommonSecurityService commonSecurityService;
+
+        public LogLevelsController(ILogLevelService logLevelServicio, ICommonSecurityService commonSecurityService)
         {
-            _context = context;    
-        }
+            this.logLevelServicio = logLevelServicio;
+            this.commonSecurityService=commonSecurityService;
+    }
 
         // GET: LogLevels
         public async Task<IActionResult> Index()
         {
-            return View(await _context.LogLevels.ToListAsync());
+
+            return View(await logLevelServicio.GetLogLevels());
         }
 
-        // GET: LogLevels/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var logLevel = await _context.LogLevels
-                .SingleOrDefaultAsync(m => m.LogLevelId == id);
-            if (logLevel == null)
-            {
-                return NotFound();
-            }
-
-            return View(logLevel);
-        }
+   
 
         // GET: LogLevels/Create
         public IActionResult Create()
@@ -58,9 +47,27 @@ namespace bd.log.web.Controllers.MVC
         {
             if (ModelState.IsValid)
             {
-                _context.Add(logLevel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+              var response= await logLevelServicio.Crear(logLevel);
+                if (response.IsSuccess)
+                {
+                    var responseLog = await commonSecurityService.SaveLogEntry(new entidades.ObjectTranfer.LogEntryTranfer
+                    {
+                        ApplicationName = "LogEntry",
+                        ExceptionTrace = null,
+                        Message = "Se ha actualizado un Log Entry",
+                        UserName = "Usuario 1",
+                        LogCategoryParametre = "Edit",
+                        LogLevelShortName = "ADV",
+                        EntityID =string.Format("{0} {1}","LogLevel", logLevel.LogLevelId),
+                    });
+
+                    
+                    return RedirectToAction("Index");
+                    
+                }
+
+                ViewData["Error"] = response.Message;
+
             }
             return View(logLevel);
         }
@@ -68,17 +75,7 @@ namespace bd.log.web.Controllers.MVC
         // GET: LogLevels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var logLevel = await _context.LogLevels.SingleOrDefaultAsync(m => m.LogLevelId == id);
-            if (logLevel == null)
-            {
-                return NotFound();
-            }
-            return View(logLevel);
+            return View(await logLevelServicio.GetLogLevel(Convert.ToInt32(id)));
         }
 
         // POST: LogLevels/Edit/5
@@ -88,50 +85,51 @@ namespace bd.log.web.Controllers.MVC
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("LogLevelId,Code,Name,ShortName,Description")] LogLevel logLevel)
         {
-            if (id != logLevel.LogLevelId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+              var response=  await logLevelServicio.Editar(logLevel);
+                if (response.IsSuccess)
                 {
-                    _context.Update(logLevel);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LogLevelExists(logLevel.LogLevelId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+
+                ViewData["Error"] = response.Message;
             }
+
             return View(logLevel);
+            
         }
 
         // GET: LogLevels/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            try
             {
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var respuesta = await logLevelServicio.Eliminar(Convert.ToInt32(id));
+                if (respuesta.IsSuccess)
+                {
+                    return View("Index", logLevelServicio.GetLogLevels());
+                }
+                else
+                {
+                    return NotFound();
+                }
+              
+                //ViewData["Error"] = respuesta.Message;
+            }
+            catch (Exception ex)
+            {
+
+                ViewData["Error"] = ex.Message;
                 return NotFound();
             }
 
-            var logLevel = await _context.LogLevels
-                .SingleOrDefaultAsync(m => m.LogLevelId == id);
-            if (logLevel == null)
-            {
-                return NotFound();
-            }
 
-            return View(logLevel);
         }
 
         // POST: LogLevels/Delete/5
@@ -139,15 +137,15 @@ namespace bd.log.web.Controllers.MVC
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var logLevel = await _context.LogLevels.SingleOrDefaultAsync(m => m.LogLevelId == id);
-            _context.LogLevels.Remove(logLevel);
-            await _context.SaveChangesAsync();
+            //var logLevel = await _context.LogLevels.SingleOrDefaultAsync(m => m.LogLevelId == id);
+            //_context.LogLevels.Remove(logLevel);
+            //await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool LogLevelExists(int id)
-        {
-            return _context.LogLevels.Any(e => e.LogLevelId == id);
-        }
+        //private bool LogLevelExists(int id)
+        //{
+        //    //return _context.LogLevels.Any(e => e.LogLevelId == id);
+        //}
     }
 }

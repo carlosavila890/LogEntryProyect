@@ -1,11 +1,14 @@
-﻿using bd.log.datos;
+﻿ 
 using bd.log.entidades;
 using bd.log.servicios.Interfaces;
 using bd.log.utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace bd.log.servicios.Servicios
 {
@@ -13,7 +16,7 @@ namespace bd.log.servicios.Servicios
     {
         #region Atributos
 
-        private readonly LogDbContext db;
+
 
 
         #endregion
@@ -24,9 +27,8 @@ namespace bd.log.servicios.Servicios
 
         #region Constructores
 
-        public LogCategoryService(LogDbContext db)
+        public LogCategoryService()
         {
-            this.db = db;
 
         }
 
@@ -34,140 +36,165 @@ namespace bd.log.servicios.Servicios
 
         #region Metodos
 
-        public Response Crear(LogCategory logCategory)
+        public async Task<Response> Crear(LogCategory logCategory)
         {
             try
             {
-                var respuesta = Existe(logCategory);
-                if (!respuesta.IsSuccess)
+                using (HttpClient cliente = new HttpClient())
                 {
+                    var request = JsonConvert.SerializeObject(logCategory);
+                    var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                    db.Add(logCategory);
-                    db.SaveChanges();
-                    return new Response
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
+
+                    var url = "/api/LogCategories/InsertarLogCategory";
+                    var respuesta = await cliente.PostAsync(url, content);
+
+                    var resultado = await respuesta.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Response>(resultado);
+                    if (response.IsSuccess)
                     {
-                        IsSuccess = true,
-                        Message = "Ok",
-                    };
-                }
-                else
-                {
-                    return new Response
-                    {
-                        IsSuccess = false,
-                        Message = "Existe una Brigada de Salud y Seguridad Ocupacional con igual nombre...",
-                    };
+
+                    }
+                    return response;
+
                 }
             }
             catch (Exception ex)
             {
+
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = ex.Message,
+                    Message = "Error",
                 };
             }
         }
 
-        public Response Editar(LogCategory logCategory)
+        public async Task<Response> Editar(LogCategory logCategory)
         {
             try
             {
-                var respuesta = Existe(logCategory);
-                if (!respuesta.IsSuccess)
+                using (HttpClient cliente = new HttpClient())
                 {
-                    var respuestalogCategory = (LogCategory)respuesta.Resultado;
-                    db.Update(respuestalogCategory);
-                    db.SaveChanges();
-                    return new Response
-                    {
-                        IsSuccess = true,
-                        Message = "Ok",
-                    };
+                    var request = JsonConvert.SerializeObject(logCategory);
+                    var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                }
-                else
-                {
-                    return new Response
-                    {
-                        IsSuccess = false,
-                        Message = "Existe una Brigada de Salud y Seguridad Ocupacional con igual nombre...",
-                    };
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
+
+                    var url = "/api/LogCategories/EditarLogCategory";
+                    var respuesta = await cliente.PutAsync(url, content);
+
+
+                    var resultado = await respuesta.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Response>(resultado);
+                    return response;
+
                 }
             }
-
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = ex.Message,
+                    Message = "Error",
                 };
             }
         }
 
-        public Response Eliminar(int logCategoryId)
+        public async Task<Response> Eliminar(int LogCategoryId)
         {
+            var loglevel = new LogCategory();
             try
             {
-                var respuestalogCategory = db.LogCategories.Find(logCategoryId);
-                if (respuestalogCategory != null)
-                {
-                    db.Remove(respuestalogCategory);
-                    db.SaveChanges();
-                    return new Response
-                    {
-                        IsSuccess = true,
-                        Message = "Ok",
-                    };
-                }
-                return new Response
-                {
-                    IsSuccess = false,
-                    Message = "No se encontró la Brigada de Salud y Seguridad Ocupacional",
-                };
 
+                using (HttpClient cliente = new HttpClient())
+                {
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
+
+                    var url = "/api/LogCategories/" + LogCategoryId;
+                    var respuesta = await cliente.DeleteAsync(url);
+
+
+                    var resultado = await respuesta.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Response>(resultado);
+
+                    return response;
+
+
+                }
             }
             catch (Exception ex)
             {
+
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = "La Brigada de Salud y Seguridad Ocupacional no se puede eliminar, existen releciones que dependen de él...",
+                    Message = "Error",
                 };
             }
+
         }
 
-        public Response Existe(LogCategory logCategory)
+
+
+        public async Task<LogCategory> GetLogCategory(int LogCategoryId)
         {
-            var respuestaPais = db.LogCategories.Where(p => p.Name == logCategory.Name).FirstOrDefault();
-            if (respuestaPais != null)
+            var loglevel = new LogCategory();
+            try
             {
-                return new Response
+
+                using (HttpClient cliente = new HttpClient())
                 {
-                    IsSuccess = true,
-                    Message = "Existe una categoría de igual nombre",
-                    Resultado = null,
-                };
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
 
+                    var url = "/api/LogCategories/" + LogCategoryId;
+                    var respuesta = await cliente.GetAsync(url);
+
+
+                    var result = await respuesta.Content.ReadAsStringAsync();
+                    loglevel = JsonConvert.DeserializeObject<LogCategory>(result);
+
+                    return loglevel;
+
+
+                }
+            }
+            catch (Exception)
+            {
+                return loglevel;
+                throw;
             }
 
-            return new Response
+        }
+
+        public async Task<List<LogCategory>> GetLogCategories()
+        {
+            var lista = new List<LogCategory>();
+            try
             {
-                IsSuccess = false,
-                Message = "No existe país...",
-                Resultado = db.LogCategories.Where(p => p.LogCategoryId == logCategory.LogCategoryId).FirstOrDefault(),
-            };
-        }
 
-        public LogCategory GetLogCategory(int logCategoryId)
-        {
-            return db.LogCategories.Where(c => c.LogCategoryId == logCategoryId).FirstOrDefault();
-        }
+                using (HttpClient cliente = new HttpClient())
+                {
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
 
-        public List<LogCategory> GetLogCategories()
-        {
-            return db.LogCategories.OrderBy(p => p.Name).ToList();
+                    var url = "/api/LogCategories/ListarLogCategories";
+                    var respuesta = await cliente.GetAsync(url);
+
+
+                    var result = await respuesta.Content.ReadAsStringAsync();
+                    lista = JsonConvert.DeserializeObject<List<LogCategory>>(result);
+
+                    return lista;
+
+
+                }
+            }
+            catch (Exception)
+            {
+                return lista;
+                throw;
+            }
         }
 
         #endregion

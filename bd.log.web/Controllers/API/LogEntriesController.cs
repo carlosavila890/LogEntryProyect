@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using bd.log.datos;
+ 
 using bd.log.entidades;
 using bd.log.entidades.ObjectTranfer;
 using bd.log.servicios.Interfaces;

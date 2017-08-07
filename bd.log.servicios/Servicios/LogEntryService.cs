@@ -4,14 +4,15 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using bd.log.servicios.Interfaces;
 using bd.log.entidades;
-using bd.log.datos;
+ 
+using System.Threading.Tasks;
 
 namespace bd.log.servicios.Servicios
 {
     public class LogEntryService : ILogEntryService
     {
         #region Attributes
-        LogDbContext db;
+       
         #endregion
 
         #region Services
@@ -101,6 +102,40 @@ namespace bd.log.servicios.Servicios
                 return logEntries;
             }
             return logEntries;
+        }
+
+        public List<LogEntry> GetLogEntriesByParameter(string parametro)
+        {
+            switch (parametro)
+            {
+                
+                case "ApplicationName":
+                    return (new List<LogEntry>(db.LogEntries.GroupBy(x => x.ApplicationName).Select(g => g.First())));
+                case "MachineIP":
+                    return (new List<LogEntry>(db.LogEntries.GroupBy(x => x.MachineIP).Select(g => g.First())));
+                case "UserName":
+                    return (new List<LogEntry>(db.LogEntries.GroupBy(x => x.UserName).Select(g => g.First())));
+                case "MachineName":
+                    return (new List<LogEntry>(db.LogEntries.GroupBy(x => x.MachineName).Select(g => g.First())));
+                default:
+                    return null;
+            }
+
+
+        }
+
+        public async Task<List<LogEntry>> GetListaFiltradaLogEntry(int LogLevelId, int LogCategoryId, string ApplicationName, string MachineIP, string UserName, string MachineName)
+        {
+            // return (new List<LogEntry>(db.LogEntries.Where(x => x.LogLevel.LogLevelId  == LogLevelId && x.ApplicationName == ApplicationName && x.MachineIP == MachineIP && x.UserName == UserName && x.MachineName == MachineName)));
+             return await ((db.LogEntries.
+                 Where(x => (x.LogLevel.LogLevelId  == LogLevelId || LogLevelId== 0)
+                 && (x.LogCategoryId == LogCategoryId || LogCategoryId == 0)
+                 && (x.ApplicationName == ApplicationName || ApplicationName==null)
+                 && (x.MachineIP == MachineIP || MachineIP==null)
+                 && (x.UserName == UserName || UserName==null)
+                 && (x.MachineName == MachineName || MachineName==null))).ToListAsync());
+
+
         }
 
         #endregion
