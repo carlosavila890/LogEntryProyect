@@ -37,9 +37,11 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.LogCategoryId">Edit</a> 
+                @*<a asp-action="Edit" asp-route-id="@item.LogCategoryId">Edit</a> 
                 <a asp-action="Details" asp-route-id="@item.LogCategoryId">Details</a> 
-                <a asp-action="Delete" asp-route-id="@item.LogCategoryId">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.LogCategoryId">Delete</a>*@
+                @Html.ActionLink("Editar", "Edit", new { id = item.LogCategoryId }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.LogCategoryId }, new { onclick = "return confirm('Desea eliminar el Log Category... ?');" }) |
             </td>
         </tr>
 }

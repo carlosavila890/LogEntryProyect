@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using bd.log.datos;
+ 
 using Microsoft.EntityFrameworkCore;
 using bd.log.servicios.Interfaces;
 using bd.log.servicios.Servicios;
@@ -29,12 +29,15 @@ namespace bd.log.web
         {
             // Add framework services.
             services.AddMvc();
-            services.AddDbContext<LogDbContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("LogConnection")));
+            //services.AddDbContext<LogDbContext>(options =>
+            //  options.UseSqlServer(Configuration.GetConnectionString("LogConnection")));
 
-            services.AddScoped<ICommonSecurityService, CommonSecurityService>();
-            services.AddScoped<ILogEntryService, LogEntryService>();
+            //services.AddScoped<ICommonSecurityService, CommonSecurityService>();
+            //services.AddScoped<ILogEntryService, LogEntryService>();
             services.AddScoped<INetworkService, NetworkService>();
+            services.AddScoped<ILogLevelService, LogLevelService>();
+            services.AddScoped<ICommonSecurityService, CommonSecurityService>();
+            services.AddScoped<ILogCategoryService, LogCategoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,10 +57,10 @@ namespace bd.log.web
                 using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                 .CreateScope())
                 {
-                    serviceScope.ServiceProvider.GetService<LogDbContext>()
-                             .Database.Migrate();
+                    //serviceScope.ServiceProvider.GetService<LogDbContext>()
+                    //         .Database.Migrate();
 
-                    serviceScope.ServiceProvider.GetService<LogDbContext>().EnsureSeedData();
+                    //serviceScope.ServiceProvider.GetService<LogDbContext>().EnsureSeedData();
                 }
 
             }

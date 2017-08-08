@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.4
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bd.log.datos", "bd.log.datos\bd.log.datos.csproj", "{D9CF50BC-7C73-4D35-8FF4-9C94C4D25050}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bd.log.servicios", "bd.log.servicios\bd.log.servicios.csproj", "{111E1AC3-A700-4884-8490-22647FD95E47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bd.log.entidades", "bd.log.entidades\bd.log.entidades.csproj", "{6F1E2912-22BC-431F-BEA9-85B448BD762E}"
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D9CF50BC-7C73-4D35-8FF4-9C94C4D25050}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9CF50BC-7C73-4D35-8FF4-9C94C4D25050}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9CF50BC-7C73-4D35-8FF4-9C94C4D25050}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9CF50BC-7C73-4D35-8FF4-9C94C4D25050}.Release|Any CPU.Build.0 = Release|Any CPU
 		{111E1AC3-A700-4884-8490-22647FD95E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{111E1AC3-A700-4884-8490-22647FD95E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{111E1AC3-A700-4884-8490-22647FD95E47}.Release|Any CPU.ActiveCfg = Release|Any CPU

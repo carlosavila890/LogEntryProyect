@@ -2,149 +2,147 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using bd.log.datos;
+ 
 using bd.log.entidades;
+using bd.log.servicios.Interfaces;
+using System;
 
 namespace bd.log.web.Controllers.MVC
 {
     public class LogCategoriesController : Controller
     {
-        private readonly LogDbContext _context;
+        private readonly ILogCategoryService logCategoryServicio;
+        private readonly ICommonSecurityService commonSecurityService;
 
-        public LogCategoriesController(LogDbContext context)
+        public LogCategoriesController(ILogCategoryService logCategoryServicio, ICommonSecurityService commonSecurityService)
         {
-            _context = context;    
-        }
+            this.logCategoryServicio = logCategoryServicio;
+            this.commonSecurityService=commonSecurityService;
+    }
 
-        // GET: LogCategories
+        // GET: LogCategorys
         public async Task<IActionResult> Index()
         {
-            return View(await _context.LogCategories.ToListAsync());
+
+            return View(await logCategoryServicio.GetLogCategories());
         }
 
-        // GET: LogCategories/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+   
 
-            var logCategory = await _context.LogCategories
-                .SingleOrDefaultAsync(m => m.LogCategoryId == id);
-            if (logCategory == null)
-            {
-                return NotFound();
-            }
-
-            return View(logCategory);
-        }
-
-        // GET: LogCategories/Create
+        // GET: LogCategorys/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: LogCategories/Create
+        // POST: LogCategorys/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LogCategoryId,ParameterValue,Name,Description")] LogCategory logCategory)
+        public async Task<IActionResult> Create([Bind("LogCategoryId,Description,Name,ParameterValue")] LogCategory logCategory)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(logCategory);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+              var response= await logCategoryServicio.Crear(logCategory);
+                if (response.IsSuccess)
+                {
+                    var responseLog = await commonSecurityService.SaveLogEntry(new entidades.ObjectTranfer.LogEntryTranfer
+                    {
+                        ApplicationName = "LogEntry",
+                        ExceptionTrace = null,
+                        Message = "Se ha actualizado un Log Entry",
+                        UserName = "Usuario 1",
+                        LogCategoryParametre = "Edit",
+                        LogLevelShortName = "ADV",
+                        EntityID =string.Format("{0} {1}","LogCategory", logCategory.LogCategoryId),
+                    });
+
+                    
+                    return RedirectToAction("Index");
+                    
+                }
+
+                ViewData["Error"] = response.Message;
+
             }
             return View(logCategory);
         }
 
-        // GET: LogCategories/Edit/5
+        // GET: LogCategorys/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var logCategory = await _context.LogCategories.SingleOrDefaultAsync(m => m.LogCategoryId == id);
-            if (logCategory == null)
-            {
-                return NotFound();
-            }
-            return View(logCategory);
+            return View(await logCategoryServicio.GetLogCategory(Convert.ToInt32(id)));
         }
 
-        // POST: LogCategories/Edit/5
+        // POST: LogCategorys/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("LogCategoryId,ParameterValue,Name,Description")] LogCategory logCategory)
         {
-            if (id != logCategory.LogCategoryId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+              var response=  await logCategoryServicio.Editar(logCategory);
+                if (response.IsSuccess)
                 {
-                    _context.Update(logCategory);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LogCategoryExists(logCategory.LogCategoryId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+
+                ViewData["Error"] = response.Message;
             }
+
             return View(logCategory);
+            
         }
 
-        // GET: LogCategories/Delete/5
+        // GET: LogCategorys/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            try
             {
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var respuesta = await logCategoryServicio.Eliminar(Convert.ToInt32(id));
+                if (respuesta.IsSuccess)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return NotFound();
+                }
+              
+                //ViewData["Error"] = respuesta.Message;
+            }
+            catch (Exception ex)
+            {
+
+                ViewData["Error"] = ex.Message;
                 return NotFound();
             }
 
-            var logCategory = await _context.LogCategories
-                .SingleOrDefaultAsync(m => m.LogCategoryId == id);
-            if (logCategory == null)
-            {
-                return NotFound();
-            }
 
-            return View(logCategory);
         }
 
-        // POST: LogCategories/Delete/5
+        // POST: LogCategorys/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var logCategory = await _context.LogCategories.SingleOrDefaultAsync(m => m.LogCategoryId == id);
-            _context.LogCategories.Remove(logCategory);
-            await _context.SaveChangesAsync();
+            //var logCategory = await _context.LogCategorys.SingleOrDefaultAsync(m => m.LogCategoryId == id);
+            //_context.LogCategorys.Remove(logCategory);
+            //await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool LogCategoryExists(int id)
-        {
-            return _context.LogCategories.Any(e => e.LogCategoryId == id);
-        }
+        //private bool LogCategoryExists(int id)
+        //{
+        //    //return _context.LogCategorys.Any(e => e.LogCategoryId == id);
+        //}
     }
 }

@@ -1,19 +1,21 @@
-﻿using bd.log.datos;
-using bd.log.entidades;
+﻿using bd.log.entidades;
 using bd.log.servicios.Interfaces;
 using bd.log.utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace bd.log.servicios.Servicios
 {
-   public class LogLevelService: ILogLevelService
+    public class LogLevelService: ILogLevelService
     {
         #region Atributos
 
-        private readonly LogDbContext db;
+       
 
 
         #endregion
@@ -24,9 +26,8 @@ namespace bd.log.servicios.Servicios
 
         #region Constructores
 
-        public LogLevelService(LogDbContext db)
+        public LogLevelService()
         {
-            this.db = db;
 
         }
 
@@ -34,140 +35,165 @@ namespace bd.log.servicios.Servicios
 
         #region Metodos
 
-        public Response Crear(LogLevel logLevel)
+        public async Task<Response>  Crear(LogLevel logLevel)
         {
             try
             {
-                var respuesta = Existe(logLevel);
-                if (!respuesta.IsSuccess)
+                using (HttpClient cliente= new HttpClient())
                 {
+                    var request = JsonConvert.SerializeObject(logLevel);
+                    var content = new StringContent(request,Encoding.UTF8,"application/json");
 
-                    db.Add(logLevel);
-                    db.SaveChanges();
-                    return new Response
+                    cliente.BaseAddress= new Uri("http://localhost:58471");
+
+                    var url = "/api/LogLevels/InsertarLogLevel";
+                    var respuesta = await cliente.PostAsync(url,content);
+
+                    var resultado = await respuesta.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Response>(resultado);
+                    if (response.IsSuccess)
                     {
-                        IsSuccess = true,
-                        Message = "Ok",
-                    };
-                }
-                else
-                {
-                    return new Response
-                    {
-                        IsSuccess = false,
-                        Message = "Existe una Brigada de Salud y Seguridad Ocupacional con igual nombre...",
-                    };
+
+                    }
+                    return response;
+
                 }
             }
             catch (Exception ex)
             {
+
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = ex.Message,
+                    Message = "Error",
                 };
             }
         }
 
-        public Response Editar(LogLevel logLevel)
+        public async Task<Response> Editar(LogLevel logLevel)
         {
             try
             {
-                var respuesta = Existe(logLevel);
-                if (!respuesta.IsSuccess)
+                using (HttpClient cliente = new HttpClient())
                 {
-                    var respuestalogCategory = (LogLevel)respuesta.Resultado;
-                    db.Update(respuestalogCategory);
-                    db.SaveChanges();
-                    return new Response
-                    {
-                        IsSuccess = true,
-                        Message = "Ok",
-                    };
+                    var request = JsonConvert.SerializeObject(logLevel);
+                    var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                }
-                else
-                {
-                    return new Response
-                    {
-                        IsSuccess = false,
-                        Message = "Existe una Brigada de Salud y Seguridad Ocupacional con igual nombre...",
-                    };
-                }
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
+
+                    var url = "/api/LogLevels/EditarLogLevel";
+                    var respuesta = await cliente.PutAsync(url, content);
+
+
+                    var resultado = await respuesta.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Response>(resultado);
+                    return response;
+
+                }     
             }
-
-            catch (Exception ex)
+             catch (Exception)
             {
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = ex.Message,
+                    Message = "Error",
                 };
             }
         }
 
-        public Response Eliminar(int LogLevelId)
+        public async Task<Response> Eliminar(int LogLevelId)
         {
+            var loglevel = new LogLevel();
             try
             {
-                var respuestalogCategory = db.LogLevels.Find(LogLevelId);
-                if (respuestalogCategory != null)
-                {
-                    db.Remove(respuestalogCategory);
-                    db.SaveChanges();
-                    return new Response
-                    {
-                        IsSuccess = true,
-                        Message = "Ok",
-                    };
-                }
-                return new Response
-                {
-                    IsSuccess = false,
-                    Message = "No se encontró la Brigada de Salud y Seguridad Ocupacional",
-                };
 
+                using (HttpClient cliente = new HttpClient())
+                {
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
+
+                    var url = "/api/LogLevels/" + LogLevelId;
+                    var respuesta = await cliente.DeleteAsync(url);
+
+
+                    var resultado = await respuesta.Content.ReadAsStringAsync();
+                    var response = JsonConvert.DeserializeObject<Response>(resultado);
+
+                    return response;
+                 
+
+                }
             }
             catch (Exception ex)
             {
+
                 return new Response
                 {
                     IsSuccess = false,
-                    Message = "La Brigada de Salud y Seguridad Ocupacional no se puede eliminar, existen releciones que dependen de él...",
+                    Message = "Error",
                 };
             }
+
         }
 
-        public Response Existe(LogLevel logLevel)
+
+
+        public async Task<LogLevel> GetLogLevel(int LogLevelId)
         {
-            var respuestaPais = db.LogLevels.Where(p => p.Name == logLevel.Name).FirstOrDefault();
-            if (respuestaPais != null)
+            var loglevel = new LogLevel();
+            try
             {
-                return new Response
+
+                using (HttpClient cliente = new HttpClient())
                 {
-                    IsSuccess = true,
-                    Message = "Existe una categoría de igual nombre",
-                    Resultado = null,
-                };
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
 
+                    var url = "/api/LogLevels/" + LogLevelId;
+                    var respuesta = await cliente.GetAsync(url);
+
+
+                    var result = await respuesta.Content.ReadAsStringAsync();
+                    loglevel = JsonConvert.DeserializeObject<LogLevel>(result);
+
+                    return loglevel;
+
+
+                }
+            }
+            catch (Exception)
+            {
+                return loglevel;
+                throw;
             }
 
-            return new Response
+        }
+
+        public async Task<List<LogLevel>> GetLogLevels()
+        {
+            var lista = new List<LogLevel>();
+            try
             {
-                IsSuccess = false,
-                Message = "No existe país...",
-                Resultado = db.LogLevels.Where(p => p.LogLevelId == logLevel.LogLevelId).FirstOrDefault(),
-            };
-        }
+               
+                using (HttpClient cliente = new HttpClient())
+                {
+                    cliente.BaseAddress = new Uri("http://localhost:58471");
 
-        public LogLevel GetLogLevel(int LogLevelId)
-        {
-            return db.LogLevels.Where(c => c.LogLevelId == LogLevelId).FirstOrDefault();
-        }
+                    var url = "/api/LogLevels/ListarLogLevels";
+                    var respuesta = await cliente.GetAsync(url);
 
-        public List<LogLevel> GetLogLevels()
-        {
-            return db.LogLevels.OrderBy(p => p.Name).ToList();
+                   
+                    var result = await respuesta.Content.ReadAsStringAsync();
+                    lista = JsonConvert.DeserializeObject<List<LogLevel>>(result);
+
+                    return lista;
+                   
+
+                }
+            }
+            catch (Exception)
+            {
+                return lista;
+                throw;
+            }
         }
 
         #endregion
