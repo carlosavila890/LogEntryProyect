@@ -348,8 +348,21 @@ namespace bd.log.datos
             //            });
             //        }
 
-            //        this.SaveChangesAsync();
-            //    }
+                        this.LogEntries.Add(new LogEntry
+                        {
+                            ApplicationName = "Aplicación11",
+                            ExceptionTrace = ",",
+                            LogCategoryId = 2,
+                            LogDate = DateTime.Now,
+                            LogLevelId = 2,
+                            MachineIP = "10.10.10.110",
+                            MachineName = "PC6",
+                            Message = "Objeto prueba 11",
+                            ObjEntityId = "11",
+                            UserName = "Nestor 11"
+                        });
+                    }
+                }
                 
             //}
         }
