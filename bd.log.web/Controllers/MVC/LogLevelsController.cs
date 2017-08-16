@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
  
 using bd.log.entidades;
 using bd.log.servicios.Interfaces;
+using bd.log.guardar.Interfaces;
+using bd.log.guardar.ObjectTranfer;
 
 namespace bd.log.web.Controllers.MVC
 {
@@ -50,7 +52,7 @@ namespace bd.log.web.Controllers.MVC
               var response= await logLevelServicio.Crear(logLevel);
                 if (response.IsSuccess)
                 {
-                    var responseLog = await commonSecurityService.SaveLogEntry(new entidades.ObjectTranfer.LogEntryTranfer
+                    var responseLog = await commonSecurityService.SaveLogEntry(new LogEntryTranfer
                     {
                         ApplicationName = "LogEntry",
                         ExceptionTrace = null,
@@ -59,7 +61,7 @@ namespace bd.log.web.Controllers.MVC
                         LogCategoryParametre = "Edit",
                         LogLevelShortName = "ADV",
                         EntityID =string.Format("{0} {1}","LogLevel", logLevel.LogLevelId),
-                    });
+                    },new Uri("http://localhost:61615"), "/api/");
 
                     
                     return RedirectToAction("Index");
@@ -113,7 +115,7 @@ namespace bd.log.web.Controllers.MVC
                 var respuesta = await logLevelServicio.Eliminar(Convert.ToInt32(id));
                 if (respuesta.IsSuccess)
                 {
-                    return View("Index", logLevelServicio.GetLogLevels());
+                    return RedirectToAction("Index");
                 }
                 else
                 {

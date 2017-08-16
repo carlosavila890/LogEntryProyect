@@ -1,4 +1,5 @@
 ﻿using bd.log.entidades;
+using bd.log.guardar.Interfaces;
 using bd.log.servicios.Interfaces;
 using bd.log.utils;
 using Newtonsoft.Json;
@@ -15,20 +16,20 @@ namespace bd.log.servicios.Servicios
     {
         #region Atributos
 
-       
+
 
 
         #endregion
 
         #region Servicios
-
+        private readonly ICommonSecurityService commonSecurityService;
         #endregion
 
         #region Constructores
 
-        public LogLevelService()
+        public LogLevelService(ICommonSecurityService commonSecurityService)
         {
-
+            this.commonSecurityService = commonSecurityService;
         }
 
         #endregion
@@ -39,20 +40,32 @@ namespace bd.log.servicios.Servicios
         {
             try
             {
-                using (HttpClient cliente= new HttpClient())
+                using (HttpClient cliente = new HttpClient())
                 {
                     var request = JsonConvert.SerializeObject(logLevel);
-                    var content = new StringContent(request,Encoding.UTF8,"application/json");
+                    var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                    cliente.BaseAddress= new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogLevels/InsertarLogLevel";
-                    var respuesta = await cliente.PostAsync(url,content);
+                    var respuesta = await cliente.PostAsync(url, content);
 
                     var resultado = await respuesta.Content.ReadAsStringAsync();
                     var response = JsonConvert.DeserializeObject<Response>(resultado);
                     if (response.IsSuccess)
                     {
+                        await commonSecurityService.SaveLogEntry(
+                                                   new guardar.ObjectTranfer.LogEntryTranfer
+                                                   {
+                                                       ApplicationName = "LogEntryProyect",
+                                                       EntityID = "",
+                                                       ExceptionTrace = new Exception(),
+                                                       LogCategoryParametre = "Critical",
+                                                       LogLevelShortName = "ERR",
+                                                       Message = "se ha insertado",
+                                                       UserName = "Paul",
+                                                   }
+                                                   , new Uri("http://localhost:61615"), "/api/LogEntries/InsertarLonEntry");
 
                     }
                     return response;
@@ -61,6 +74,7 @@ namespace bd.log.servicios.Servicios
             }
             catch (Exception ex)
             {
+             
 
                 return new Response
                 {
@@ -79,7 +93,7 @@ namespace bd.log.servicios.Servicios
                     var request = JsonConvert.SerializeObject(logLevel);
                     var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogLevels/EditarLogLevel";
                     var respuesta = await cliente.PutAsync(url, content);
@@ -109,7 +123,7 @@ namespace bd.log.servicios.Servicios
 
                 using (HttpClient cliente = new HttpClient())
                 {
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogLevels/" + LogLevelId;
                     var respuesta = await cliente.DeleteAsync(url);
@@ -145,7 +159,7 @@ namespace bd.log.servicios.Servicios
 
                 using (HttpClient cliente = new HttpClient())
                 {
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogLevels/" + LogLevelId;
                     var respuesta = await cliente.GetAsync(url);
@@ -175,7 +189,7 @@ namespace bd.log.servicios.Servicios
                
                 using (HttpClient cliente = new HttpClient())
                 {
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogLevels/ListarLogLevels";
                     var respuesta = await cliente.GetAsync(url);

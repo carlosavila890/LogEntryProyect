@@ -2,10 +2,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
- 
 using bd.log.entidades;
 using bd.log.servicios.Interfaces;
 using System;
+using bd.log.guardar.Interfaces;
+using bd.log.guardar.ObjectTranfer;
 
 namespace bd.log.web.Controllers.MVC
 {
@@ -47,7 +48,7 @@ namespace bd.log.web.Controllers.MVC
               var response= await logCategoryServicio.Crear(logCategory);
                 if (response.IsSuccess)
                 {
-                    var responseLog = await commonSecurityService.SaveLogEntry(new entidades.ObjectTranfer.LogEntryTranfer
+                    var responseLog = await commonSecurityService.SaveLogEntry(new LogEntryTranfer
                     {
                         ApplicationName = "LogEntry",
                         ExceptionTrace = null,
@@ -56,7 +57,7 @@ namespace bd.log.web.Controllers.MVC
                         LogCategoryParametre = "Edit",
                         LogLevelShortName = "ADV",
                         EntityID =string.Format("{0} {1}","LogCategory", logCategory.LogCategoryId),
-                    });
+                    },new Uri("http://localhost:61615"), "/api/LogEntry");
 
                     
                     return RedirectToAction("Index");

@@ -1,12 +1,13 @@
-@model   bd.log.entidades.ViewModels.LogEntryViewModel
+@model bd.log.entidades.ViewModels.LogEntryViewModel
 
+
+@using PagedList.Core.Mvc;
+@using PagedList.Core;
 @{
-    ViewData["Title"] = "Index";
+    ViewBag.Title = "Product List";
 }
 
 <h2>Index</h2>
-
-
 
 <div class="widget-body no-padding">
     <form asp-action="ConsultaFiltrada" id="checkout-form" class="smart-form" novalidate="novalidate">
@@ -16,110 +17,119 @@
                 <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.ShortName">
                     <option value="0">Seleccione Nombre Corto</option>
                 </select>
+
+                <label class="input">
+                    <input asp-for="MachineName" class="form-control" placeholder="@Html.DisplayNameFor(model => model.MachineName)" />
+                    <span asp-validation-for="MachineName" class="text-danger"></span>
+                </label>
+
+                <label class="input">
+                    <input asp-for="UserName" class="form-control" placeholder="@Html.DisplayNameFor(model => model.UserName)" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </label>
+
+                <label class="input">
+                    <input type="date" asp-for="LogDateStart" class="form-control" placeholder="@Html.DisplayNameFor(model => model.LogDateStart)" />
+                    <span asp-validation-for="LogDateStart" class="text-danger"></span>
+                </label>
+
+            </div>
+
+            <div class="row">
                 <select asp-for="LogCategoryId" asp-class="form-control" asp-items="ViewBag.Name">
                     <option value="0">Seleccione Categoria</option>
                 </select>
                 <label class="input">
-                        <input asp-for="MachineName" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.MachineName)" />
-                        <span asp-validation-for="MachineName" class="text-danger"></span>
-                  </label>
-                <label class="input">
-                    <input asp-for="MachineIP" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.MachineIP)" />
+                    <input asp-for="MachineIP" class="form-control" placeholder="@Html.DisplayNameFor(model => model.MachineIP)" />
                     <span asp-validation-for="MachineIP" class="text-danger"></span>
                 </label>
                 <label class="input">
-                    <input asp-for="UserName" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.UserName)" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </label>
-                <label class="input">
-                    <input asp-for="ApplicationName" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.ApplicationName)" />
+                    <input asp-for="ApplicationName" class="form-control" placeholder="@Html.DisplayNameFor(model => model.ApplicationName)" />
                     <span asp-validation-for="ApplicationName" class="text-danger"></span>
                 </label>
-            
-               
+                <label class="input">
+                    <input type="date" asp-for="LogDateFinish" class="form-control" placeholder="@Html.DisplayNameFor(model => model.LogDateFinish)" />
+                    <span asp-validation-for="LogDateFinish" class="text-danger"></span>
+                </label>
+            </div>
+            <footer>
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-offset-12">
+                        <input type="submit" value="Buscar" class="btn btn-primary" />
 
-              </div>
-                @*
-            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.ApplicationName">
-                <option value="0">Seleccione Nombre Aplicacion</option>
-            </select>
-            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.UserName">
-                <option value="0">Seleccione Nombre de Usuario</option>
-            </select>
-            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.MachineName">
-                <option value="0">Seleccione Nombre de la Máquina</option>
-            </select>
-            <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.MachineIP">
-                <option value="0">Seleccione IP de la máquina</option>
-            </select>*@
-                <footer>
-                    <div class="form-group">
-                        <div class="col-md-offset-4 col-md-offset-12">
-                            <input type="submit" value="Buscar" class="btn btn-primary" />
-
-                        </div>
                     </div>
-                    <span class="text-danger">@ViewData["Error"]</span>
-                </footer>
-</fieldset>
+                </div>
+                <span class="text-danger">@ViewData["Error"]</span>
+            </footer>
+        </fieldset>
     </form>
 </div>
 
-<p>
-    <a asp-action="Create">Nuevo</a>
-</p>
-<div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().ApplicationName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().LogDate)
-                </th>
-
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < 10; i++)
-            {
-
-            
-       
-                <tr>
-                    <td>
-                       
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => model.LogEntrys.ElementAt(i).LogDate)
-                    </td>
 
 
-                </tr>
-            }
-        </tbody>
-    </table>
+<table class="table">
 
-    </div>
-</div>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MachineIP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LogDateStart)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExceptionTrace)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MachineName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ObjEntityId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
 
 
+    @foreach (var item in Model.LogEntrys)
+    {
+        <tr>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.MachineIP)
+            </td>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.LogDate)
+            </td>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.ApplicationName)
+            </td>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.ExceptionTrace)
+            </td>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.MachineName)
+            </td>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.Message)
+            </td>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.ObjEntityId)
+            </td>
+            <td style="border: 2px solid black; text-align: center; word-wrap: break-word;">
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+        </tr>
+    }
+</table>
 
- @section Scripts {
-
-             
-<script type="text/javascript" src="~/js/jquery.tablesorter.js"></script>
-<script type="text/javascript" src="~/js/jquery.tablesorter.pager.js"></script>
-
-<script type="text/javascript">
- $(window).load(function () {
-    $(function () {
-        $("table.tablesorter").tablesorter({ widthFixed: true, sortList: [[0, 0]] })
-            .tablesorterPager({ container: $("#pager"), size: $(".pagesize option:selected").val() });
-        });
-  });
-</script>
-   
-  }
+    <br />
+ 

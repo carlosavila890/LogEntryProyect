@@ -45,7 +45,7 @@ namespace bd.log.servicios.Servicios
                     var request = JsonConvert.SerializeObject(logCategory);
                     var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogCategories/InsertarLogCategory";
                     var respuesta = await cliente.PostAsync(url, content);
@@ -80,7 +80,7 @@ namespace bd.log.servicios.Servicios
                     var request = JsonConvert.SerializeObject(logCategory);
                     var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogCategories/EditarLogCategory";
                     var respuesta = await cliente.PutAsync(url, content);
@@ -110,7 +110,7 @@ namespace bd.log.servicios.Servicios
 
                 using (HttpClient cliente = new HttpClient())
                 {
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogCategories/" + LogCategoryId;
                     var respuesta = await cliente.DeleteAsync(url);
@@ -146,7 +146,7 @@ namespace bd.log.servicios.Servicios
 
                 using (HttpClient cliente = new HttpClient())
                 {
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogCategories/" + LogCategoryId;
                     var respuesta = await cliente.GetAsync(url);
@@ -176,7 +176,7 @@ namespace bd.log.servicios.Servicios
 
                 using (HttpClient cliente = new HttpClient())
                 {
-                    cliente.BaseAddress = new Uri("http://localhost:58471");
+                    cliente.BaseAddress = new Uri("http://localhost:61615");
 
                     var url = "/api/LogCategories/ListarLogCategories";
                     var respuesta = await cliente.GetAsync(url);

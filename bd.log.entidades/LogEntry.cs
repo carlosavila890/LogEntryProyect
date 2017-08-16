@@ -39,12 +39,12 @@ namespace bd.log.entidades
 
         [Required]
         [StringLength(1024)]
-        [Display(Name = "IP Dispositivo")]
+        [Display(Name = "Nombre Usuario")]
         public string UserName { get; set; }
 
         [Required]
         [StringLength(1024)]
-        [Display(Name = "IP Dispositivo")]
+        [Display(Name = "Aplicacion")]
         public string ApplicationName { get; set; }
 
         [Required]
