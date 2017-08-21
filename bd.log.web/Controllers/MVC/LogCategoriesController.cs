@@ -1,11 +1,8 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using bd.log.entidades;
 using bd.log.servicios.Interfaces;
 using System;
-using bd.log.guardar.Interfaces;
 using bd.log.guardar.ObjectTranfer;
 
 namespace bd.log.web.Controllers.MVC
@@ -13,12 +10,11 @@ namespace bd.log.web.Controllers.MVC
     public class LogCategoriesController : Controller
     {
         private readonly ILogCategoryService logCategoryServicio;
-        private readonly ICommonSecurityService commonSecurityService;
 
-        public LogCategoriesController(ILogCategoryService logCategoryServicio, ICommonSecurityService commonSecurityService)
+
+        public LogCategoriesController(ILogCategoryService logCategoryServicio)
         {
             this.logCategoryServicio = logCategoryServicio;
-            this.commonSecurityService=commonSecurityService;
     }
 
         // GET: LogCategorys
@@ -46,23 +42,23 @@ namespace bd.log.web.Controllers.MVC
             if (ModelState.IsValid)
             {
               var response= await logCategoryServicio.Crear(logCategory);
-                if (response.IsSuccess)
-                {
-                    var responseLog = await commonSecurityService.SaveLogEntry(new LogEntryTranfer
-                    {
-                        ApplicationName = "LogEntry",
-                        ExceptionTrace = null,
-                        Message = "Se ha actualizado un Log Entry",
-                        UserName = "Usuario 1",
-                        LogCategoryParametre = "Edit",
-                        LogLevelShortName = "ADV",
-                        EntityID =string.Format("{0} {1}","LogCategory", logCategory.LogCategoryId),
-                    },new Uri("http://localhost:61615"), "/api/LogEntry");
+                //if (response.IsSuccess)
+                //{
+                //    var responseLog = await commonSecurityService.SaveLogEntry(new LogEntryTranfer
+                //    {
+                //        ApplicationName = "LogEntry",
+                //        ExceptionTrace = null,
+                //        Message = "Se ha actualizado un Log Entry",
+                //        UserName = "Usuario 1",
+                //        LogCategoryParametre = "Edit",
+                //        LogLevelShortName = "ADV",
+                //        EntityID =string.Format("{0} {1}","LogCategory", logCategory.LogCategoryId),
+                //    },new Uri("http://localhost:61615"), "/api/LogEntry");
 
                     
-                    return RedirectToAction("Index");
+                //    return RedirectToAction("Index");
                     
-                }
+                //}
 
                 ViewData["Error"] = response.Message;
 

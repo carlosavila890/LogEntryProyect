@@ -3,12 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
- 
-using Microsoft.EntityFrameworkCore;
 using bd.log.servicios.Interfaces;
 using bd.log.servicios.Servicios;
-using bd.log.guardar.Interfaces;
-using bd.log.guardar.Servicios;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace bd.log.web
@@ -39,7 +35,6 @@ namespace bd.log.web
             services.AddScoped<ILogEntryService, LogEntryService>();
             services.AddScoped<INetworkService, NetworkService>();
             services.AddScoped<ILogLevelService, LogLevelService>();
-            services.AddScoped<ICommonSecurityService, CommonSecurityService>();
             services.AddScoped<ILogCategoryService, LogCategoryService>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 

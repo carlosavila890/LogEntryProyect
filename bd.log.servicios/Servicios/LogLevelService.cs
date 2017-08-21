@@ -1,11 +1,10 @@
 ﻿using bd.log.entidades;
-using bd.log.guardar.Interfaces;
+using bd.log.guardar.Servicios;
 using bd.log.servicios.Interfaces;
 using bd.log.utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,14 +21,14 @@ namespace bd.log.servicios.Servicios
         #endregion
 
         #region Servicios
-        private readonly ICommonSecurityService commonSecurityService;
+        
         #endregion
 
         #region Constructores
 
-        public LogLevelService(ICommonSecurityService commonSecurityService)
+        public LogLevelService( )
         {
-            this.commonSecurityService = commonSecurityService;
+            
         }
 
         #endregion
@@ -54,7 +53,7 @@ namespace bd.log.servicios.Servicios
                     var response = JsonConvert.DeserializeObject<Response>(resultado);
                     if (response.IsSuccess)
                     {
-                        await commonSecurityService.SaveLogEntry(
+                        await GuardarLogService.SaveLogEntry(
                                                    new guardar.ObjectTranfer.LogEntryTranfer
                                                    {
                                                        ApplicationName = "LogEntryProyect",
@@ -64,8 +63,7 @@ namespace bd.log.servicios.Servicios
                                                        LogLevelShortName = "ERR",
                                                        Message = "se ha insertado",
                                                        UserName = "Paul",
-                                                   }
-                                                   , new Uri("http://localhost:61615"), "/api/LogEntries/InsertarLonEntry");
+                                                   });
 
                     }
                     return response;

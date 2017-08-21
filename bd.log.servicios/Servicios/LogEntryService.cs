@@ -1,15 +1,12 @@
-﻿using bd.log.utils;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using bd.log.servicios.Interfaces;
 using bd.log.entidades;
 using bd.log.entidades.ViewModels;
-using bd.log.guardar.Interfaces;
 
 namespace bd.log.servicios.Servicios
 {
@@ -20,7 +17,6 @@ namespace bd.log.servicios.Servicios
         #endregion
 
         #region Services
-        private readonly ICommonSecurityService commonSecurityService;
 
         #endregion
 
