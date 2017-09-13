@@ -37,6 +37,8 @@ namespace bd.log.web
             services.AddScoped<ILogLevelService, LogLevelService>();
             services.AddScoped<ILogCategoryService, LogCategoryService>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IApiServicio, ApiServicio>();
+
 
         }
 

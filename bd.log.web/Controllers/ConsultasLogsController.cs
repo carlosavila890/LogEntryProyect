@@ -73,7 +73,7 @@ namespace bd.log.web.Controllers
                 //    break;
             //}
             ViewData["ShortName"] =  new SelectList(await logLevelService.GetLogLevels(), "LogLevelId", "ShortName");
-            ViewData["Name"] = new SelectList(await logCategoryService.GetLogCategories(), "LogCategoryId", "Name");
+            ViewData["Name"] = new SelectList(await logCategoryService.ListarLogCategories(), "LogCategoryId", "Name");
            
 
             //ViewData["ShortName"] =  new SelectList(await logLevelService.GetLogLevels(), "LogLevelId", "ShortName");
@@ -90,7 +90,7 @@ namespace bd.log.web.Controllers
             //log.LogLevels = db.LogLevels.ToList();
 
             ViewData["ShortName"] = new SelectList(await logLevelService.GetLogLevels(), "LogLevelId", "ShortName");
-            ViewData["Name"] = new SelectList(await logCategoryService.GetLogCategories(), "LogCategoryId", "Name");
+            ViewData["Name"] = new SelectList(await logCategoryService.ListarLogCategories(), "LogCategoryId", "Name");
             //ViewData["ApplicationName"] = new SelectList(logEntryService.GetLogEntriesByParameter("ApplicationName"), "LogLevelId", "ApplicationName");
             //ViewData["MachineIP"] = new SelectList(logEntryService.GetLogEntriesByParameter("MachineIP"), "LogLevelId", "MachineIP");
             //ViewData["UserName"] = new SelectList(logEntryService.GetLogEntriesByParameter("UserName"), "LogLevelId", "UserName");

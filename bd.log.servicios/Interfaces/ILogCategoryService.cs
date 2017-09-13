@@ -9,11 +9,11 @@ namespace bd.log.servicios.Interfaces
 {
    public interface ILogCategoryService
     {
-        Task<List<LogCategory>> GetLogCategories();
-        Task<LogCategory> GetLogCategory(int idLogCategory);
-        Task<Response> Crear(LogCategory logCategory);
+        Task<List<LogCategory>> ListarLogCategories();
+        Task<entidades.Utils.Response> SeleccionarAsync(string id);
+        Task<entidades.Utils.Response> CrearAsync(LogCategory logCategory);
         //Response Existe(LogCategory logCategory);
-        Task<Response> Editar(LogCategory logCategory);
-        Task<Response> Eliminar(int idLogCategory);
+        Task<entidades.Utils.Response> EditarAsync(string id, LogCategory logCategory);
+        Task<entidades.Utils.Response> EliminarAsync(string id);
     }
 }

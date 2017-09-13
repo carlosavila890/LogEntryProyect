@@ -21,7 +21,12 @@ namespace bd.log.web.Controllers.MVC
         public async Task<IActionResult> Index()
         {
 
-            return View(await logCategoryServicio.GetLogCategories());
+            var listado = await logCategoryServicio.ListarLogCategories();
+            if (listado == null)
+            {
+                return BadRequest();
+            }
+            return View(listado);
         }
 
    
@@ -32,114 +37,99 @@ namespace bd.log.web.Controllers.MVC
             return View();
         }
 
-        // POST: LogCategorys/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LogCategoryId,Description,Name,ParameterValue")] LogCategory logCategory)
-        {
-            if (ModelState.IsValid)
-            {
-              var response= await logCategoryServicio.Crear(logCategory);
-                //if (response.IsSuccess)
-                //{
-                //    var responseLog = await commonSecurityService.SaveLogEntry(new LogEntryTranfer
-                //    {
-                //        ApplicationName = "LogEntry",
-                //        ExceptionTrace = null,
-                //        Message = "Se ha actualizado un Log Entry",
-                //        UserName = "Usuario 1",
-                //        LogCategoryParametre = "Edit",
-                //        LogLevelShortName = "ADV",
-                //        EntityID =string.Format("{0} {1}","LogCategory", logCategory.LogCategoryId),
-                //    },new Uri("http://localhost:61615"), "/api/LogEntry");
-
-                    
-                //    return RedirectToAction("Index");
-                    
-                //}
-
-                ViewData["Error"] = response.Message;
-
-            }
-            return View(logCategory);
-        }
-
-        // GET: LogCategorys/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            return View(await logCategoryServicio.GetLogCategory(Convert.ToInt32(id)));
-        }
-
-        // POST: LogCategorys/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LogCategoryId,ParameterValue,Name,Description")] LogCategory logCategory)
-        {
-            if (ModelState.IsValid)
-            {
-              var response=  await logCategoryServicio.Editar(logCategory);
-                if (response.IsSuccess)
-                {
-                    return RedirectToAction("Index");
-
-                }
-
-                ViewData["Error"] = response.Message;
-            }
-
-            return View(logCategory);
-            
-        }
-
-        // GET: LogCategorys/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Create(LogCategory logCategory)
         {
             try
             {
-                if (id == null)
+                if (ModelState.IsValid)
                 {
-                    return NotFound();
+                    var response = await logCategoryServicio.CrearAsync(logCategory);
+                    if (response.IsSuccess)
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                    ViewData["Error"] = response.Message;
                 }
-                var respuesta = await logCategoryServicio.Eliminar(Convert.ToInt32(id));
+                return View(logCategory);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+
+        // GET: LogCategorys/Edit/5
+        public async Task<IActionResult> Edit(string id)
+        {
+            try
+            {
+                var respuesta = await logCategoryServicio.SeleccionarAsync(id);
+
                 if (respuesta.IsSuccess)
                 {
-                    return RedirectToAction("Index");
+                    return View(respuesta.Resultado);
                 }
-                else
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, LogCategory LogCategory)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var respuesta = await logCategoryServicio.EditarAsync(id, LogCategory);
+
+                    if (respuesta.IsSuccess)
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                    ViewData["Error"] = respuesta.Message;
+                }
+                return View(LogCategory);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
                 {
                     return NotFound();
                 }
-              
-                //ViewData["Error"] = respuesta.Message;
+                var respuesta = await logCategoryServicio.EliminarAsync(id);
+                if (!respuesta.IsSuccess)
+                {
+                    return BadRequest();
+                }
+
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                ViewData["Error"] = ex.Message;
-                return NotFound();
+                return BadRequest();
             }
-
-
         }
-
-        // POST: LogCategorys/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            //var logCategory = await _context.LogCategorys.SingleOrDefaultAsync(m => m.LogCategoryId == id);
-            //_context.LogCategorys.Remove(logCategory);
-            //await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        //private bool LogCategoryExists(int id)
-        //{
-        //    //return _context.LogCategorys.Any(e => e.LogCategoryId == id);
-        //}
     }
 }

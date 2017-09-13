@@ -152,7 +152,7 @@ namespace bd.log.servicios.Servicios
                     var request = JsonConvert.SerializeObject(LogEntryViewModel);
                     var content = new StringContent(request, Encoding.UTF8, "application/json");
 
-                    cliente.BaseAddress = new Uri("http://localhost:61615");
+                    cliente.BaseAddress = new Uri("http://localhost:50237");
 
                     var url = "/api/LogEntries/ListaFiltradaLogEntry";
                     var respuesta = await cliente.PostAsync(url, content);
