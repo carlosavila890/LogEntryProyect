@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace bd.webappseguridad.entidades.Enumeradores
+namespace bd.log.servicios.Enumeradores
 {
     public enum Aplicacion
     {
-        WebAppSeguridad, Logs
+        WebAppLogEntry, Logs
     }
 }

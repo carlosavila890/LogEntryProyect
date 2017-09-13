@@ -4,29 +4,45 @@ using bd.log.entidades;
 using bd.log.servicios.Interfaces;
 using System;
 using bd.log.guardar.ObjectTranfer;
+using bd.log.entidades.Utils;
+using bd.log.guardar.Servicios;
+using bd.log.servicios.Enumeradores;
 
 namespace bd.log.web.Controllers.MVC
 {
     public class LogCategoriesController : Controller
     {
-        private readonly ILogCategoryService logCategoryServicio;
+        private readonly IApiServicio apiServicio;
 
 
-        public LogCategoriesController(ILogCategoryService logCategoryServicio)
+        public LogCategoriesController(IApiServicio apiServicio)
         {
-            this.logCategoryServicio = logCategoryServicio;
+            this.apiServicio = apiServicio;
     }
 
         // GET: LogCategorys
         public async Task<IActionResult> Index()
         {
 
-            var listado = await logCategoryServicio.ListarLogCategories();
-            if (listado == null)
+            try
             {
+                var ListaAdscgrp = await apiServicio.Listar<LogCategory>(new Uri(WebApp.BaseAddress), "/api/Adscmiems/ListarAdscmiem");
+                return View(ListaAdscgrp);
+            }
+            catch (Exception ex)
+            {
+
+                await GuardarLogService.SaveLogEntry(new LogEntryTranfer
+                {
+                    ApplicationName = Convert.ToString(Aplicacion.WebAppLogEntry),
+                    Message = "Listando Categorial",
+                    ExceptionTrace = ex,
+                    LogCategoryParametre = Convert.ToString(LogCategoryParameter.NetActivity),
+                    LogLevelShortName = Convert.ToString(LogLevelParameter.ERR),
+                    UserName = "Usuario Log "
+                });
                 return BadRequest();
             }
-            return View(listado);
         }
 
    
@@ -46,7 +62,7 @@ namespace bd.log.web.Controllers.MVC
             {
                 if (ModelState.IsValid)
                 {
-                    var response = await logCategoryServicio.CrearAsync(logCategory);
+                    var response = await apiServicio.InsertarAsync(logCategory, new Uri(WebApp.BaseAddress), "/api/LogCategories/InsertarLogCategory");
                     if (response.IsSuccess)
                     {
                         return RedirectToAction("Index");
@@ -69,7 +85,7 @@ namespace bd.log.web.Controllers.MVC
         {
             try
             {
-                var respuesta = await logCategoryServicio.SeleccionarAsync(id);
+                var respuesta = await apiServicio.SeleccionarAsync<Response>(id, new Uri(WebApp.BaseAddress), "/api/LogCategories");
 
                 if (respuesta.IsSuccess)
                 {
@@ -93,7 +109,7 @@ namespace bd.log.web.Controllers.MVC
             {
                 if (ModelState.IsValid)
                 {
-                    var respuesta = await logCategoryServicio.EditarAsync(id, LogCategory);
+                    var respuesta = await apiServicio.EditarAsync(id, LogCategory,new Uri( WebApp.BaseAddress), "/api/LogCategories");
 
                     if (respuesta.IsSuccess)
                     {
@@ -118,7 +134,7 @@ namespace bd.log.web.Controllers.MVC
                 {
                     return NotFound();
                 }
-                var respuesta = await logCategoryServicio.EliminarAsync(id);
+                var respuesta = await apiServicio.EliminarAsync(id,new Uri(WebApp.BaseAddress), "/api/LogCategories");
                 if (!respuesta.IsSuccess)
                 {
                     return BadRequest();
