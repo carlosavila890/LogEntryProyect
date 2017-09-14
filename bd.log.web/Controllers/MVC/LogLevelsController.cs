@@ -5,24 +5,46 @@ using Microsoft.AspNetCore.Mvc;
 using bd.log.entidades;
 using bd.log.servicios.Interfaces;
 using bd.log.guardar.ObjectTranfer;
+using bd.log.guardar.Servicios;
+using bd.log.servicios.Enumeradores;
+using bd.log.entidades.Utils;
+using Newtonsoft.Json;
 
 namespace bd.log.web.Controllers.MVC
 {
     public class LogLevelsController : Controller
     {
 
-        private readonly ILogLevelService logLevelServicio;
+        private readonly IApiServicio apiServicio;
 
-        public LogLevelsController(ILogLevelService logLevelServicio)
+        public LogLevelsController(IApiServicio apiServicio)
         {
-            this.logLevelServicio = logLevelServicio;
+            this.apiServicio = apiServicio;
     }
 
         // GET: LogLevels
         public async Task<IActionResult> Index()
         {
 
-            return View(await logLevelServicio.GetLogLevels());
+            try
+            {
+                var ListaAdscgrp = await apiServicio.Listar<LogLevel>(new Uri(WebApp.BaseAddress), "/api/LogLevels/ListarLogLevels");
+                return View(ListaAdscgrp);
+            }
+            catch (Exception ex)
+            {
+
+                await GuardarLogService.SaveLogEntry(new LogEntryTranfer
+                {
+                    ApplicationName = Convert.ToString(Aplicacion.WebAppLogEntry),
+                    Message = "Listando Categorial",
+                    ExceptionTrace = ex,
+                    LogCategoryParametre = Convert.ToString(LogCategoryParameter.NetActivity),
+                    LogLevelShortName = Convert.ToString(LogLevelParameter.ERR),
+                    UserName = "Usuario Log "
+                });
+                return BadRequest();
+            }
         }
 
    
@@ -38,39 +60,47 @@ namespace bd.log.web.Controllers.MVC
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LogLevelId,Code,Name,ShortName,Description")] LogLevel logLevel)
+        public async Task<IActionResult> Create(LogLevel logLevel)
         {
-            if (ModelState.IsValid)
+            try
             {
-              var response= await logLevelServicio.Crear(logLevel);
-                //if (response.IsSuccess)
-                //{
-                //    var responseLog = await commonSecurityService.SaveLogEntry(new LogEntryTranfer
-                //    {
-                //        ApplicationName = "LogEntry",
-                //        ExceptionTrace = null,
-                //        Message = "Se ha actualizado un Log Entry",
-                //        UserName = "Usuario 1",
-                //        LogCategoryParametre = "Edit",
-                //        LogLevelShortName = "ADV",
-                //        EntityID =string.Format("{0} {1}","LogLevel", logLevel.LogLevelId),
-                //    },new Uri("http://localhost:61615"), "/api/");
+                if (ModelState.IsValid)
+                {
+                    var response = await apiServicio.InsertarAsync(logLevel, new Uri(WebApp.BaseAddress), "/api/LogLevels/InsertarLogLevel");
+                    if (response.IsSuccess)
+                    {
+                        return RedirectToAction("Index");
+                    }
 
-                    
-                //    return RedirectToAction("Index");
-                    
-                //}
-
-                ViewData["Error"] = response.Message;
-
+                    ViewData["Error"] = response.Message;
+                }
+                return View(logLevel);
             }
-            return View(logLevel);
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         // GET: LogLevels/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View(await logLevelServicio.GetLogLevel(Convert.ToInt32(id)));
+            try
+            {
+                var respuesta = await apiServicio.SeleccionarAsync<Response>(Convert.ToString(id), new Uri(WebApp.BaseAddress), "/api/LogLevels");
+                var resultado = JsonConvert.DeserializeObject<LogLevel>(respuesta.Resultado.ToString());
+                if (respuesta.IsSuccess)
+                {
+                    return View(resultado);
+                }
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+
+            }
         }
 
         // POST: LogLevels/Edit/5
@@ -78,22 +108,28 @@ namespace bd.log.web.Controllers.MVC
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LogLevelId,Code,Name,ShortName,Description")] LogLevel logLevel)
+        public async Task<IActionResult> Edit(int id,LogLevel logLevel)
         {
-            if (ModelState.IsValid)
+            try
             {
-              var response=  await logLevelServicio.Editar(logLevel);
-                if (response.IsSuccess)
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction("Index");
+                    var respuesta = await apiServicio.EditarAsync(Convert.ToString(id), logLevel, new Uri(WebApp.BaseAddress), "/api/LogLevels");
 
+                    if (respuesta.IsSuccess)
+                    {
+                        return RedirectToAction("Index");
+                    }
+
+                    ViewData["Error"] = respuesta.Message;
                 }
-
-                ViewData["Error"] = response.Message;
+                return View(logLevel);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
             }
 
-            return View(logLevel);
-            
         }
 
         // GET: LogLevels/Delete/5
@@ -101,30 +137,22 @@ namespace bd.log.web.Controllers.MVC
         {
             try
             {
-                if (id == null)
+                if (!ModelState.IsValid)
                 {
                     return NotFound();
                 }
-                var respuesta = await logLevelServicio.Eliminar(Convert.ToInt32(id));
-                if (respuesta.IsSuccess)
+                var respuesta = await apiServicio.EliminarAsync(Convert.ToString(id), new Uri(WebApp.BaseAddress), "/api/LogLevels");
+                if (!respuesta.IsSuccess)
                 {
-                    return RedirectToAction("Index");
+                    return BadRequest();
                 }
-                else
-                {
-                    return NotFound();
-                }
-              
-                //ViewData["Error"] = respuesta.Message;
+
+                return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                ViewData["Error"] = ex.Message;
-                return NotFound();
+                return BadRequest();
             }
-
-
         }
 
         // POST: LogLevels/Delete/5

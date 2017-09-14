@@ -6,11 +6,6 @@ using bd.log.entidades.Utils;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
-using bd.log.guardar.Enumeradores;
-using bd.log.guardar.ObjectTranfer;
-using bd.log.guardar.Servicios;
-using bd.log.entidades.Utils;
-using bd.log.servicios.Interfaces;
 
 namespace bd.log.servicios.Servicios
 {
@@ -26,7 +21,6 @@ namespace bd.log.servicios.Servicios
                     var content = new StringContent(request, Encoding.UTF8, "application/json");
 
                     client.BaseAddress = baseAddress;
-
                     var response = await client.PostAsync(url, content);
 
                     var resultado = await response.Content.ReadAsStringAsync();
@@ -51,22 +45,10 @@ namespace bd.log.servicios.Servicios
                 {
                     client.BaseAddress = baseAddress;
                     url = string.Format("{0}/{1}", url, id);
-
                     var response = await client.DeleteAsync(url);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return new Response
-                        {
-                            IsSuccess = false,
-                            Message = "Error",
-                        };
-                    }
-                    return new Response
-                    {
-                        IsSuccess = true,
-                        Message = "Insertar Ok",
-
-                    };
+                    var resultado = await response.Content.ReadAsStringAsync();
+                    var respuesta = JsonConvert.DeserializeObject<Response>(resultado);
+                    return respuesta;
 
                 }
             }
@@ -91,22 +73,10 @@ namespace bd.log.servicios.Servicios
                     client.BaseAddress = baseAddress;
                     url = string.Format("{0}/{1}", url, id);
 
-                    var response = await client.PutAsync(url,content);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return new Response
-                        {
-                            IsSuccess = false,
-                            Message = "Error",
-                        };
-                    }
-                    return new Response
-                    {
-                        IsSuccess = true,
-                        Message = "Insertar Ok",
-
-                    };
-
+                    var response = await client.PutAsync(url, content);
+                    var resultado = await response.Content.ReadAsStringAsync();
+                    var respuesta = JsonConvert.DeserializeObject<Response>(resultado);
+                    return respuesta;
                 }
             }
             catch (Exception ex)
@@ -153,6 +123,34 @@ namespace bd.log.servicios.Servicios
                     var response = JsonConvert.DeserializeObject<T>(resultado);
                     return response;
                 }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+
+        public  async Task<List<T>> Listar<T>(object model,Uri baseAddress,string url) where T : class
+        {
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var request = JsonConvert.SerializeObject(model);
+                    var content = new StringContent(request, Encoding.UTF8, "application/json");
+
+                    client.BaseAddress = baseAddress;
+
+                    var response = await client.PostAsync(url, content);
+
+                    var resultado = await response.Content.ReadAsStringAsync();
+                    var respuesta = JsonConvert.DeserializeObject<List<T>>(resultado);
+                    return respuesta;
+                   
+                }
+
             }
             catch (Exception)
             {

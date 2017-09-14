@@ -1,57 +1,91 @@
 @model bd.log.entidades.LogLevel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Levels";
 }
+<!-- MAIN CONTENT -->
+<div id="content">
 
-<h2>Editar</h2>
+    <!-- widget grid -->
+    <section id="widget-grid" class="">
 
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <h4> @ViewData["Error"] </h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="LogLevelId" />
-        <div class="form-group">
-            <label asp-for="Code" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Code" class="form-control" />
-                <span asp-validation-for="Code" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="ShortName" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="ShortName" class="form-control" />
-                <span asp-validation-for="ShortName" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Description" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <textarea rows="10" cols="2" asp-for="Description" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.Description)"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
+        <!-- START ROW -->
+        <div class="row">
+            <!-- NEW COL START -->
+            <article class="col-sm-12 col-md-12 col-lg-10">
+                <!-- Widget ID (each widget will need unique ID)-->
+                <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
 
-<div>
-    <a asp-action="Index">Back to List</a>
+                    <header>
+                        <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                        <h2>Nivel</h2>
+                    </header>
+                    <div>
+
+                        <div class="jarviswidget-editbox">
+                        </div>
+                        <div class="widget-body no-padding">
+
+                            <form asp-action="Edit" id="checkout-form" class="smart-form" novalidate="novalidate">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="LogLevelId" />
+                                <fieldset>
+                                    <div class="row">
+
+                                        <section class="col col-4">
+                                            <label class="input">
+                                                <i class="icon-prepend fa fa-user"></i>
+                                                <input maxlength="30"  asp-for="Code" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.Code)" />
+                                                <span asp-validation-for="Code" class="text-danger"></span>
+                                            </label>
+                                        </section>
+
+                                        <section class="col col-4">
+                                            <label class="input">
+                                                <i class="icon-prepend fa fa-user"></i>
+                                                <input maxlength="20"  asp-for="Name" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.Name)" />
+                                                <span asp-validation-for="Name" class="text-danger"></span>
+                                            </label>
+                                        </section>
+
+                                        <section class="col col-4">
+                                            <label class="input">
+                                                <i class="icon-prepend fa fa-user"></i>
+                                                <input maxlength="5" asp-for="ShortName" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.ShortName)" />
+                                                <span asp-validation-for="ShortName" class="text-danger"></span>
+                                            </label>
+                                        </section>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <section>
+                                        <label class="textarea">
+                                            <textarea rows="6" maxlength="1024" asp-for="Description" placeholder="@Html.DisplayNameFor(model=>model.Description)"></textarea>
+                                            <span asp-validation-for="Description" class="text-danger"></span>
+                                        </label>
+                                    </section>
+                                </fieldset>
+                                <footer>
+                                    <span class="text-danger">@ViewData["Error"]</span>
+                                    <input type="submit" value="Salvar" class="btn btn-primary" />
+                                    <a asp-action="Index" class="btn btn-default">Cancelar</a>
+                                </footer>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <!-- END ROW -->
+    </section>
+    <!-- end widget grid -->
+    <!-- Modal -->
+
 </div>
-
+<!-- END MAIN CONTENT -->
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+
+
+    </script>
 }

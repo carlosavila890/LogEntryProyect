@@ -7,6 +7,7 @@ using bd.log.guardar.ObjectTranfer;
 using bd.log.entidades.Utils;
 using bd.log.guardar.Servicios;
 using bd.log.servicios.Enumeradores;
+using Newtonsoft.Json;
 
 namespace bd.log.web.Controllers.MVC
 {
@@ -26,7 +27,7 @@ namespace bd.log.web.Controllers.MVC
 
             try
             {
-                var ListaAdscgrp = await apiServicio.Listar<LogCategory>(new Uri(WebApp.BaseAddress), "/api/Adscmiems/ListarAdscmiem");
+                var ListaAdscgrp = await apiServicio.Listar<LogCategory>(new Uri(WebApp.BaseAddress), "/api/LogCategories/ListarLogCategories");
                 return View(ListaAdscgrp);
             }
             catch (Exception ex)
@@ -86,10 +87,10 @@ namespace bd.log.web.Controllers.MVC
             try
             {
                 var respuesta = await apiServicio.SeleccionarAsync<Response>(id, new Uri(WebApp.BaseAddress), "/api/LogCategories");
-
+                var resultado = JsonConvert.DeserializeObject<LogCategory>(respuesta.Resultado.ToString());
                 if (respuesta.IsSuccess)
                 {
-                    return View(respuesta.Resultado);
+                    return View(resultado);
                 }
 
                 return NotFound();
