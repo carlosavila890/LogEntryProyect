@@ -25,7 +25,7 @@ namespace bd.log.servicios.Servicios
                     //var response = JsonConvert.DeserializeObject<Response>(resultado);
                     //var sistema = JsonConvert.DeserializeObject<Adscsist>(response.Resultado.ToString());
                     WebApp.BaseAddress = "http://localhost:5000";
-                    AppGuardarLog.BaseAddress= "http://localhost:5000";
+                   // AppGuardarLog.BaseAddress= "http://localhost:5000";
 
 
 

@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SalvarLogEntry\bd.guardarlog.servicios\bd.log.guardar.csproj" />
     <ProjectReference Include="..\bd.log.entidades\bd.log.entidades.csproj" />
     <ProjectReference Include="..\bd.log.utils\bd.log.utils.csproj" />
   </ItemGroup>

@@ -7,9 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using bd.log.guardar.ObjectTranfer;
 using bd.log.guardar.Servicios;
-using bd.log.entidades.Utils;
-using bd.log.servicios.Interfaces;
-using bd.webappseguridad.entidades.Enumeradores;
+using bd.log.servicios.Enumeradores;
 
 namespace bd.log.servicios.Servicios
 {
