@@ -7,10 +7,6 @@
   <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Controllers\API\LogEntriesController.cs" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="bd.log.guardar" Version="1.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
@@ -34,8 +30,6 @@
     <ProjectReference Include="..\bd.log.servicios\bd.log.servicios.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\API\" />
-    <Folder Include="Controllers\API\" />
     <Folder Include="Views\ConsultasLogs\" />
   </ItemGroup>
 

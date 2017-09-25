@@ -1,50 +1,93 @@
 @model bd.log.entidades.LogCategory
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Category";
 }
-<form asp-action="Create">
-    <div class="form-group">
-        <h4>Categoria</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="row form-horizontal">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-4">
-                        <input asp-for="ParameterValue" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.ParameterValue)" />
-                        <span asp-validation-for="ParameterValue" class="text-danger"></span>
+
+
+<!-- MAIN CONTENT -->
+<div id="content">
+
+    <!-- widget grid -->
+    <section id="widget-grid" class="">
+
+        <!-- START ROW -->
+        <div class="row">
+            <!-- NEW COL START -->
+            <article class="col-sm-12 col-md-12 col-lg-8">
+                <!-- Widget ID (each widget will need unique ID)-->
+                <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-custombutton="false">
+
+                    <header>
+                        <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                        <h2>Categor&iacute;a</h2>
+                    </header>
+                    <!-- widget div-->
+                    <div>
+
+                        <!-- widget edit box -->
+                        <div class="jarviswidget-editbox">
+                            <!-- This area used as dropdown edit box -->
+
+                        </div>
+                        <!-- end widget edit box -->
+                        <!-- widget content -->
+                        <div class="widget-body no-padding">
+
+                            <form asp-action="Create" id="checkout-form" class="smart-form" novalidate="novalidate">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <fieldset>
+                                    <div class="row">
+
+                                        <section class="col col-6">
+                                            <label class="input">
+                                                <i class="icon-prepend fa fa-user"></i>
+                                                <input maxlength="64" asp-for="Name" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.Name)" />
+                                                <span asp-validation-for="Name" class="text-danger"></span>
+                                            </label>
+                                        </section>
+
+                                        <section class="col col-6">
+                                            <label class="input">
+                                                <i class="icon-prepend fa fa-user"></i>
+                                                <input maxlength="32" asp-for="ParameterValue" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.ParameterValue)" />
+                                                <span asp-validation-for="ParameterValue" class="text-danger"></span>
+                                            </label>
+                                        </section>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <section>
+                                        <label class="textarea">
+                                            <textarea rows="6" maxlength="1024" asp-for="Description" placeholder="@Html.DisplayNameFor(model=>model.Description)"></textarea>
+                                            <span asp-validation-for="Description" class="text-danger"></span>
+                                        </label>
+                                    </section>
+                                </fieldset>
+
+                                <footer>
+                                    @*<span class="text-danger">@ViewData["Error"]</span>*@
+                                    <input type="submit" value="Salvar" class="btn btn-primary" />
+                                    <a asp-action="Index" class="btn btn-default">Cancelar</a>
+                                </footer>
+                            </form>
+                        </div>
+                        <!-- end widget content -->
                     </div>
+                    <!-- end widget div -->
                 </div>
+                <!-- end widget -->
 
-                <div></div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <input asp-for="Name" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.Name)" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-            <div></div>
-            <div class="row">
-                <textarea rows="10" cols="8" asp-for="Description" class="form-control" placeholder="@Html.DisplayNameFor(model=>model.Description)"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+            </article>
 
-            </div>
         </div>
+        <!-- END ROW -->
+    </section>
+    <!-- end widget grid -->
+    <!-- Modal -->
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
-
+<!-- END MAIN CONTENT -->
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+    </script>
 }

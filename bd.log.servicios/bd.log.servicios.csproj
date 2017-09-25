@@ -5,13 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="bd.log.guardar" Version="1.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="PagedList.Core.Mvc" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\bd.log.entidades\bd.log.entidades.csproj" />
-    <ProjectReference Include="..\bd.log.utils\bd.log.utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>
