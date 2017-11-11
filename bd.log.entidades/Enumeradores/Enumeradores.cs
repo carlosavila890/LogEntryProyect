@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace bd.log.servicios.Enumeradores
+namespace bd.log.entidades.Enumeradores
 {
     public enum Aplicacion
     {

@@ -6,8 +6,8 @@ using System;
 using bd.log.guardar.ObjectTranfer;
 using bd.log.entidades.Utils;
 using bd.log.guardar.Servicios;
-using bd.log.servicios.Enumeradores;
 using Newtonsoft.Json;
+using bd.log.entidades.Enumeradores;
 
 namespace bd.log.web.Controllers.MVC
 {
@@ -45,9 +45,6 @@ namespace bd.log.web.Controllers.MVC
                 return BadRequest();
             }
         }
-
-   
-
         // GET: LogCategorys/Create
         public IActionResult Create()
         {

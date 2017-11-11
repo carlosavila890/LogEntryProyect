@@ -8,4 +8,9 @@
     <PackageReference Include="PagedList.Core.Mvc" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+    <Folder Include="Constantes\" />
+  </ItemGroup>
+
 </Project>

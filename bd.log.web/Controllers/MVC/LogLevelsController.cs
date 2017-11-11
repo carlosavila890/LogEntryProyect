@@ -6,9 +6,9 @@ using bd.log.entidades;
 using bd.log.servicios.Interfaces;
 using bd.log.guardar.ObjectTranfer;
 using bd.log.guardar.Servicios;
-using bd.log.servicios.Enumeradores;
 using bd.log.entidades.Utils;
 using Newtonsoft.Json;
+using bd.log.entidades.Enumeradores;
 
 namespace bd.log.web.Controllers.MVC
 {

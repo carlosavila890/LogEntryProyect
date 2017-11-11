@@ -19,9 +19,9 @@ namespace bd.log.servicios.Servicios
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress =baseAddress;
                     var url = string.Format("{0}/{1}", "/api/Adscsists", id);
-                    var respuesta = await client.GetAsync(url);
+                    var uri = string.Format("{0}{1}", baseAddress, url);
+                    var respuesta = await client.GetAsync(new Uri(uri));
                     
                     var resultado = await respuesta.Content.ReadAsStringAsync();
                     var response = JsonConvert.DeserializeObject<Response>(resultado);

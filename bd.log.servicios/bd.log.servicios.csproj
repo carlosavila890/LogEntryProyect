@@ -14,8 +14,4 @@
     <ProjectReference Include="..\bd.log.entidades\bd.log.entidades.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

@@ -27,18 +27,16 @@ namespace bd.log.web
         // This method gets called by the runtime. Use this method to add services to the container.
         public async void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
             services.AddMvc();
-            //services.AddDbContext<LogDbContext>(options =>
-            //  options.UseSqlServer(Configuration.GetConnectionString("LogConnection")));
-
-            //services.AddScoped<ICommonSecurityService, CommonSecurityService>();
            
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IApiServicio, ApiServicio>();
 
-            await InicializarWebApp.Inicializar("LogWebService", new Uri ("http://localhost:4000"));
+            var ServicioSeguridad = Configuration.GetSection("ServicioSeguridad").Value;
+            var ServiciosLog = Configuration.GetSection("ServiciosLog").Value;
+            var HostSeguridad = Configuration.GetSection("HostServicioSeguridad").Value;
 
+            await InicializarWebApp.Inicializar(ServiciosLog, new Uri (HostSeguridad));
 
         }
 
