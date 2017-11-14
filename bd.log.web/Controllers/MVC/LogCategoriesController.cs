@@ -27,7 +27,7 @@ namespace bd.log.web.Controllers.MVC
 
             try
             {
-                var ListaAdscgrp = await apiServicio.Listar<LogCategory>(new Uri(WebApp.BaseAddress), "/api/LogCategories/ListarLogCategories");
+                var ListaAdscgrp = await apiServicio.Listar<LogCategory>(new Uri(WebApp.BaseAddress), "api/LogCategories/ListarLogCategories");
                 return View(ListaAdscgrp);
             }
             catch (Exception ex)

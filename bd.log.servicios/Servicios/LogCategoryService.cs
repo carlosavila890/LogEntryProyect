@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using bd.log.guardar.ObjectTranfer;
 using bd.log.guardar.Servicios;
-using bd.log.servicios.Enumeradores;
+using bd.log.entidades.Utils;
 
 namespace bd.log.servicios.Servicios
 {
-    public class LogCategoryService : ILogCategoryService
+    public class LogCategoryService 
     {
         #region Atributos
 
@@ -49,7 +49,7 @@ namespace bd.log.servicios.Servicios
 
                     var responseLog = await GuardarLogService.SaveLogEntry(new LogEntryTranfer
                     {
-                        ApplicationName = Convert.ToString(Aplicacion.Logs),
+                        ApplicationName = Convert.ToString(entidades.Enumeradores.Aplicacion.Logs),
                         ExceptionTrace = null,
                         Message = "Se ha creado una categoría",
                         UserName = "Usuario 1",
@@ -66,7 +66,7 @@ namespace bd.log.servicios.Servicios
             {
                 await GuardarLogService.SaveLogEntry(new LogEntryTranfer
                 {
-                    ApplicationName = Convert.ToString(Aplicacion.Logs),
+                    ApplicationName = Convert.ToString(entidades.Enumeradores.Aplicacion.Logs),
                     Message = "Creando Categoría",
                     ExceptionTrace = ex,
                     LogCategoryParametre = Convert.ToString(guardar.Enumeradores.LogCategoryParameter.Create),
@@ -127,7 +127,7 @@ namespace bd.log.servicios.Servicios
                     {
                         await GuardarLogService.SaveLogEntry(new LogEntryTranfer
                         {
-                            ApplicationName = Convert.ToString(Aplicacion.Logs),
+                            ApplicationName = Convert.ToString(entidades.Enumeradores.Aplicacion.Logs),
                             EntityID = string.Format("{0} : {1}", "Base de Datos", id),
                             LogCategoryParametre = Convert.ToString(guardar.Enumeradores.LogCategoryParameter.Edit),
                             LogLevelShortName = Convert.ToString(guardar.Enumeradores.LogLevelParameter.ADV),
@@ -143,7 +143,7 @@ namespace bd.log.servicios.Servicios
             {
                 await GuardarLogService.SaveLogEntry(new LogEntryTranfer
                 {
-                    ApplicationName = Convert.ToString(Aplicacion.Logs),
+                    ApplicationName = Convert.ToString(entidades.Enumeradores.Aplicacion.Logs),
                     Message = "Editando una categoría",
                     ExceptionTrace = ex,
                     LogCategoryParametre = Convert.ToString(guardar.Enumeradores.LogCategoryParameter.Edit),
@@ -196,7 +196,7 @@ namespace bd.log.servicios.Servicios
                 {
                     await GuardarLogService.SaveLogEntry(new LogEntryTranfer
                     {
-                        ApplicationName = Convert.ToString(Aplicacion.Logs),
+                        ApplicationName = Convert.ToString(entidades.Enumeradores.Aplicacion.Logs),
                         EntityID = string.Format("{0} : {1}", "BaseDatos", id),
                         Message = "Registro eliminado",
                         LogCategoryParametre = Convert.ToString(guardar.Enumeradores.LogCategoryParameter.Delete),
@@ -210,7 +210,7 @@ namespace bd.log.servicios.Servicios
             {
                 await GuardarLogService.SaveLogEntry(new LogEntryTranfer
                 {
-                    ApplicationName = Convert.ToString(Aplicacion.Logs),
+                    ApplicationName = Convert.ToString(entidades.Enumeradores.Aplicacion.Logs),
                     Message = "Eliminar Categoría",
                     ExceptionTrace = ex,
                     LogCategoryParametre = Convert.ToString(guardar.Enumeradores.LogCategoryParameter.Delete),
@@ -325,14 +325,14 @@ namespace bd.log.servicios.Servicios
             try
             {
 
-                lista = await apiservicio.Listar<LogCategory>(new Uri("http://localhost:50237"), "/api/LogCategories/ListarLogCategories");
+                lista = await apiservicio.Listar<LogCategory>(new Uri(WebApp.BaseAddress), "/api/LogCategories/ListarLogCategories");
                 return lista;
             }
             catch (Exception ex)
             {
                 await GuardarLogService.SaveLogEntry(new LogEntryTranfer
                 {
-                    ApplicationName = Convert.ToString(Aplicacion.Logs),
+                    ApplicationName = Convert.ToString(entidades.Enumeradores.Aplicacion.Logs),
                     Message = "Listando Categorias",
                     ExceptionTrace = ex,
                     LogCategoryParametre = Convert.ToString(guardar.Enumeradores.LogCategoryParameter.NetActivity),

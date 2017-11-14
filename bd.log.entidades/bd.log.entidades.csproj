@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="bd.log.guardar" Version="1.0.1" />
     <PackageReference Include="PagedList.Core.Mvc" Version="1.0.1" />
   </ItemGroup>
 
