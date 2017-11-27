@@ -29,8 +29,5 @@
     <ProjectReference Include="..\bd.log.entidades\bd.log.entidades.csproj" />
     <ProjectReference Include="..\bd.log.servicios\bd.log.servicios.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\ConsultasLogs\" />
-  </ItemGroup>
 
 </Project>

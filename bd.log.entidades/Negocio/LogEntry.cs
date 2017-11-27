@@ -21,10 +21,17 @@ namespace bd.log.entidades
         [Required]
         [StringLength(1024)]
         [Display(Name = "Id Entidad")]
-        public string ObjEntityId { get; set; }
+        public string ObjectName { get; set; }
+
+        [Display(Name = "Objeto Anterior")]
+        public string ObjectPrevious { get; set; }
+
+ 
+        [Display(Name = "Objeto Nuevo")]
+        public string ObjectNext { get; set; }
 
         [StringLength(4096)]
-        [Display(Name = "Excepción")]
+        [Display(Name = "Excepcion")]
         public string ExceptionTrace { get; set; }
 
         [Required]

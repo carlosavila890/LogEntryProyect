@@ -150,7 +150,7 @@ namespace bd.log.servicios.Servicios
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }

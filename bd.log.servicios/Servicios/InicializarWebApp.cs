@@ -17,6 +17,7 @@ namespace bd.log.servicios.Servicios
         {
             try
             {
+                //baseAddress=
                 using (HttpClient client = new HttpClient())
                 {
                     var url = string.Format("{0}/{1}", "/api/Adscsists", id);
@@ -26,10 +27,13 @@ namespace bd.log.servicios.Servicios
                     var resultado = await respuesta.Content.ReadAsStringAsync();
                     var response = JsonConvert.DeserializeObject<Response>(resultado);
                     var sistema = JsonConvert.DeserializeObject<Adscsist>(response.Resultado.ToString());
-                    WebApp.BaseAddress = sistema.AdstHost;
-                    AppGuardarLog.BaseAddress= sistema.AdstHost;
+                   // WebApp.BaseAddress = sistema.AdstHost;
+                  //  AppGuardarLog.BaseAddress= sistema.AdstHost;
+
+                    WebApp.BaseAddress = "http://localhost:54769";
+                    AppGuardarLog.BaseAddress = "http://localhost:54769";
                 }
-               
+
             }
             catch (Exception ex)
             {
