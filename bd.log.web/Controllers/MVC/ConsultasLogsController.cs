@@ -27,76 +27,75 @@ namespace bd.log.web.Controllers
 
         public async Task<IActionResult> ConsultaFiltrada(LogEntryViewModel view)
         {
-
+            ViewData["Error"] = string.Empty;
             view.LogEntrys = new List<LogEntry>();
+            TimeSpan days = view.LogDateFinish- view.LogDateStart;
+
+            if (days.Days>60)
+            {
+                ViewData["Error"] = "Entre la fecha de inicio y la fecha fin debe haber máximo 60 días";
+                return View("Index", view);
+            }
+
+            if (view.LogDateStart.Year==1&& view.LogDateStart.Month==1&& view.LogDateStart.Day==1)
+            {
+                DateTime hoy = DateTime.Today;
+                DateTime dosMesesAtras = hoy.AddDays(-60);
+
+                view.LogDateFinish = new DateTime(hoy.Year, hoy.Month, hoy.Day);
+                view.LogDateStart = new DateTime(dosMesesAtras.Year, dosMesesAtras.Month, dosMesesAtras.Day);
+
+            }
+
             await CargarCombos();
 
-            if (view.ApplicationName != null && view.MachineIP != null && view.MachineName != null && view.UserName != null&&view.LogDateStart!=null)
+            if (view.LogDateStart > DateTime.Today)
             {
-                view.LogDateFinish = view.LogDateStart.AddDays(60);
+                ViewData["Error"] = "La fecha de inicio no puede ser mayor que la fecha de hoy";
+                return View("Index", view);           
+            }
+
+            if (view.LogDateFinish > DateTime.Today)
+            {
+                ViewData["Error"] = "La fecha fin no puede ser mayor que la fecha de hoy";
+                return View("Index", view);
+            }
+
+            if (view.LogDateStart > view.LogDateFinish)
+            {
+                ViewData["Error"] = "La fecha de inicio no puede ser mayor que la fecha fin";
+                return View("Index", view);
+            }
 
 
-                // view.LogEntrys = await logEntryService.GetLogEntryFiltrado(view);
-                view.LogEntrys = await apiServicio.Listar<LogEntry>(view, new Uri(WebApp.BaseAddress), "/api/LogEntries/ListaFiltradaLogEntry");
-               
+            if (view.ApplicationName != null && view.MachineIP != null && view.MachineName != null && view.UserName != null)
+            {
+                view.LogEntrys = await apiServicio.Listar<LogEntry>(view, new Uri(WebApp.BaseAddress), "/api/LogEntries/ListaFiltradaLogEntry");  
                 return View("Index", view);
             }
             else {
-
                 
                 ViewData["Error"] = "Nota: Para realizar la consulta debe ingresar al menos la información de la aplicación, la ip, el nombre de la máquina, la fecha de inicio y el nombre del usuario";
                 return View("Index", view);
             }
+
         }
         
         
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index()
         {
             
-            var log = new LogEntryViewModel(); 
-            
-            if (id == 0)
-            {
+            var log = new LogEntryViewModel();
+            log.LogEntrys = new List<LogEntry>();
+            DateTime hoy = DateTime.Today;
+            DateTime dosMesesAtras = hoy.AddDays(-60);
 
-                log = new LogEntryViewModel();
-                log.LogEntrys = new List<LogEntry>();
-                await CargarCombos();
-                return View(log);
-
-            }
-            else
-            {
-                log = new LogEntryViewModel();
-                log.LogEntrys = new List<LogEntry>();
-
-                var respuesta = await apiServicio.SeleccionarAsync<Response>(id.ToString(), new Uri(WebApp.BaseAddress), "/api/LogEntries");
-                var resultado = JsonConvert.DeserializeObject<LogEntry>(respuesta.Resultado.ToString());
-                if (respuesta.IsSuccess)
-                {
-
-
-                    var view = new LogEntryViewModel
-                    {
-                        
-                            MachineName=resultado.MachineName,
-                            UserName= resultado.UserName,
-                            MachineIP =resultado.MachineIP,
-                            ApplicationName=resultado.ApplicationName,
-                            LogCategoryId=resultado.LogCategoryId,
-                           
-
-                     };
-
-
-                    view.LogEntrys = await apiServicio.Listar<LogEntry>(view, new Uri(WebApp.BaseAddress), "/api/LogEntries/ListaFiltradaLogEntry");
-                    await CargarCombos();
-                    return View("Index", view);
-
-                }
-                
-
-            }
+            log.LogDateFinish = new DateTime(hoy.Year, hoy.Month, hoy.Day);
+            log.LogDateStart = new DateTime(dosMesesAtras.Year, dosMesesAtras.Month, dosMesesAtras.Day);
+            ViewData["Error"] = string.Empty;
+            await CargarCombos();
             return View(log);
+            
         }
 
         private async Task CargarCombos()

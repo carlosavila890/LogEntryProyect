@@ -58,6 +58,18 @@
                         </div>
                         <!-- end widget edit box -->
                         <!-- widget content -->
+                        @if (@ViewData["Error"].ToString() != "")
+                        {
+                            <div class="col-lg-9">
+                                <div class="alert alert-block alert-dismissable">
+                                    <a class="close" data-dismiss="alert" href="#"><p>X</p></a>
+                                    <h4 class="alert-heading"><i class="fa fa-check-square-o"></i>Informaci&oacute;n!</h4>
+                                    <p>
+                                        <span class="text-danger"><strong><bold> @ViewData["Error"]</bold></strong></span>
+                                    </p>
+                                </div>
+                            </div>
+                        }
                         <div class="widget-body no-padding">
 
                             <form asp-action="ConsultaFiltrada" id="smart-form-register" class="smart-form">                
@@ -124,11 +136,8 @@
                     <br /><br /><br />
                    
                 </div>
-                   
-                                    
-
-                <span class="text-danger">@ViewData["Error"]</span>
-            </footer>
+                                  
+                             </footer>
                             </form>
 
                         </div>
