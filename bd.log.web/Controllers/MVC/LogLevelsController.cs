@@ -28,7 +28,7 @@ namespace bd.log.web.Controllers.MVC
 
             try
             {
-                var ListaAdscgrp = await apiServicio.Listar<LogLevel>(new Uri(WebApp.BaseAddress), "/api/LogLevels/ListarLogLevels");
+                var ListaAdscgrp = await apiServicio.Listar<LogLevel>(new Uri(WebApp.BaseAddress), "api/LogLevels/ListarLogLevels");
                 return View(ListaAdscgrp);
             }
             catch (Exception ex)
