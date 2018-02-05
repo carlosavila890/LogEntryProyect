@@ -29,55 +29,12 @@ namespace bd.log.web.Controllers
         {
             ViewData["Error"] = string.Empty;
             view.LogEntrys = new List<LogEntry>();
-            TimeSpan days = view.LogDateFinish- view.LogDateStart;
-
-            if (days.Days>60)
-            {
-                ViewData["Error"] = "Entre la fecha de inicio y la fecha fin debe haber máximo 60 días";
-                return View("Index", view);
-            }
-
-            if (view.LogDateStart.Year==1&& view.LogDateStart.Month==1&& view.LogDateStart.Day==1)
-            {
-                DateTime hoy = DateTime.Today;
-                DateTime dosMesesAtras = hoy.AddDays(-60);
-
-                view.LogDateFinish = new DateTime(hoy.Year, hoy.Month, hoy.Day);
-                view.LogDateStart = new DateTime(dosMesesAtras.Year, dosMesesAtras.Month, dosMesesAtras.Day);
-
-            }
 
             await CargarCombos();
-
-            if (view.LogDateStart > DateTime.Today)
-            {
-                ViewData["Error"] = "La fecha de inicio no puede ser mayor que la fecha de hoy";
-                return View("Index", view);           
-            }
-
-            if (view.LogDateFinish > DateTime.Today)
-            {
-                ViewData["Error"] = "La fecha fin no puede ser mayor que la fecha de hoy";
-                return View("Index", view);
-            }
-
-            if (view.LogDateStart > view.LogDateFinish)
-            {
-                ViewData["Error"] = "La fecha de inicio no puede ser mayor que la fecha fin";
-                return View("Index", view);
-            }
+            view.LogEntrys = await apiServicio.Listar<LogEntry>(view, new Uri(WebApp.BaseAddress), "api/LogEntries/ListaFiltradaLogEntry");  
+            return View("Index", view);
 
 
-            if (view.ApplicationName != null && view.MachineIP != null && view.MachineName != null && view.UserName != null)
-            {
-                view.LogEntrys = await apiServicio.Listar<LogEntry>(view, new Uri(WebApp.BaseAddress), "/api/LogEntries/ListaFiltradaLogEntry");  
-                return View("Index", view);
-            }
-            else {
-                
-                ViewData["Error"] = "Nota: Para realizar la consulta debe ingresar al menos la información de la aplicación, la ip, el nombre de la máquina, la fecha de inicio y el nombre del usuario";
-                return View("Index", view);
-            }
 
         }
         
@@ -97,14 +54,12 @@ namespace bd.log.web.Controllers
             return View(log);
             
         }
-
+ 
         private async Task CargarCombos()
         {
-           
             ViewData["ShortName"] = new SelectList(await apiServicio.Listar<LogLevel>(new Uri(WebApp.BaseAddress), "api/LogLevels/ListarLogLevels"), "LogLevelId", "ShortName");
             ViewData["Name"] = new SelectList(await apiServicio.Listar<LogCategory>(new Uri(WebApp.BaseAddress), "api/LogCategories/ListarLogCategories"), "LogCategoryId", "Name");
-
-
+            ViewData["AdpsLogin"] = new SelectList(await apiServicio.Listar<Adscpassw>(new Uri(WebApp.BaseAddressSeguridad), "api/Adscpassws/ListarAdscPassw"), "AdpsLogin", "AdpsLogin");
         }
 
 

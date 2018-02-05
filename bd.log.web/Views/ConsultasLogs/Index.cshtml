@@ -12,6 +12,7 @@
         width:auto;
     }
 </style>
+<link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" />
 			<!-- MAIN CONTENT -->
 <div id="content">
 
@@ -56,15 +57,7 @@
                             <!-- This area used as dropdown edit box -->
 
                         </div>
-                        <fieldset>
-                            <div class="row" style="padding-left:15px !important;padding-right:15px !important;">
-                                <div class="alert alert-info alert-block" style="border-left-width:5px !important;">
-                                    <h4 class="alert-heading">Informaci&oacute;n</h4>
-                                    <p class="text-danger"> Debe introducir obligatiamente los campos: Nombre de la m&aacute;quina, Nombre de usuario, Ip de la m&aacute;quina y Aplicaci&oacute;n</p><br />
-                                    Las fechas no deben tener un intervalo de m&aacute;s de 60 d&iacute;as: <span style="color:#a90329;" id="spanExtensionesPermitidas"></span>
-                                </div>
-                            </div>
-                        </fieldset>
+
                         <!-- end widget edit box -->
                         <!-- widget content -->
                         @if (@ViewData["Error"].ToString() != "")
@@ -86,51 +79,63 @@
                                 <fieldset>
                                     <div class="row">
                                         <section class="col col-3">
+                                            <label class="label">@Html.DisplayNameFor(model => model.MachineName)</label>
                                             <label class="input">
-                                                <input asp-for="MachineName" type="text" placeholder="Nombre de la maquina">
+                                                <input asp-for="MachineName" type="text" placeholder="@Html.DisplayNameFor(model => model.MachineName)">
                                             </label>
                                         </section>
                                         <section class="col col-3">
+                                            <label class="label">@Html.DisplayNameFor(model => model.UserName)</label>
                                             <label class="input">
-                                                <input asp-for="UserName" type="text" placeholder="Nombre de usuario">
+                                                <select asp-for="UserName" asp- class="form-control" asp-items="ViewBag.AdpsLogin">
+                                                    <option value="0" selected="" disabled="">@Html.DisplayNameFor(model => model.UserName)</option>
+                                                </select>
+                                                <span asp-validation-for="UserName" class="text-danger"></span>
                                             </label>
                                         </section>
                                         <section class="col col-3">
+                                            <label class="label">@Html.DisplayNameFor(model => model.MachineIP)</label>
                                             <label class="input">
-                                                <input asp-for="MachineIP" type="text" placeholder="Ip de la maquina">
+                                                <input asp-for="MachineIP" type="text" placeholder="@Html.DisplayNameFor(model => model.MachineIP)">
                                             </label>
                                         </section>
                                         <section class="col col-3">
+                                            <label class="label">@Html.DisplayNameFor(model => model.ApplicationName)</label>
                                             <label class="input">
-                                                <input asp-for="ApplicationName" type="text" placeholder="Aplicacion">
+                                                <input asp-for="ApplicationName" type="text" placeholder="@Html.DisplayNameFor(model => model.ApplicationName)">
                                             </label>
                                         </section>
                                     </div>
                                     <div class="row">
                                         <section class="col col-3">
-                                            <label class="select">
-                                                <select asp-for="LogLevelId" asp-class="form-control" asp-items="ViewBag.ShortName">
-                                                    <option value="0" selected="" disabled="">Seleccione nombre corto</option>
-                                                </select> <i></i>
+                                            <label class="label">@Html.DisplayNameFor(model => model.LogLevelId)</label>
+                                            <label class="input">
+                                                <select asp-for="LogLevelId" asp- class="form-control" asp-items="ViewBag.ShortName">
+                                                    <option value="0" selected="" disabled="">@Html.DisplayNameFor(model => model.LogLevelId)</option>
+                                                </select>
+                                                <span asp-validation-for="LogLevelId" class="text-danger"></span>
                                             </label>
                                         </section>
                                         <section class="col col-3">
+                                            <label class="label">@Html.DisplayNameFor(model => model.LogCategoryId)</label>
                                             <label class="select">
-                                                <select asp-for="LogCategoryId" asp-class="form-control" asp-items="ViewBag.Name">
-                                                    <option value="0" selected="" disabled="">Seleccione categoria</option>
-                                                </select> <i></i>
+                                                <select asp-for="LogCategoryId" asp- class="form-control" asp-items="ViewBag.Name">
+                                                    <option value="0" selected="" disabled="">@Html.DisplayNameFor(model => model.LogCategoryId)</option>
+                                                </select> 
                                             </label>
                                         </section>
                                         <section class="col col-3">
+                                            <label class="label">@Html.DisplayNameFor(model => model.LogDateStart)</label>
                                             <label class="input">
                                                 <i class="icon-append fa fa-calendar"></i>
-                                                <input asp-for="LogDateStart" type="text" placeholder="Seleccione fecha inicio" class="datepicker" data-dateformat='dd/mm/yy'>
+                                                <input asp-for="LogDateStart" type="text" placeholder="@Html.DisplayNameFor(model => model.LogDateStart)" class="datepicker" data-dateformat='dd/mm/yy'>
                                             </label>
                                         </section>
                                         <section class="col col-3">
+                                            <label class="label">@Html.DisplayNameFor(model => model.LogDateFinish)</label>
                                             <label class="input">
                                                 <i class="icon-append fa fa-calendar"></i>
-                                                <input asp-for="LogDateFinish" type="text" placeholder="Seleccione fecha fin" class="datepicker" data-dateformat='dd/mm/yy'>
+                                                <input asp-for="LogDateFinish" type="text" placeholder="@Html.DisplayNameFor(model => model.LogDateFinish)" class="datepicker" data-dateformat='dd/mm/yy'>
                                             </label>
                                         </section>
                                     </div>
@@ -209,69 +214,111 @@
                         </div>
                         <!-- end widget edit box -->
                         <!-- widget content -->
-                        @if (Model.LogEntrys.Count>0)
+                        @if (Model.LogEntrys.Count > 0)
                         {
-                            
-                        
-                        <div class="widget-body no-padding">
-                            <table id="dt_basic" class="table table-striped table-bordered table-hover" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th data-hide="phone">Ip de Maquina</th>
-                                        <th data-class="expand"><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> Fecha</th>
-                                        <th data-hide="phone"><i class="fa fa-fw fa-phone text-muted hidden-md hidden-sm hidden-xs"></i> Aplicacion</th>
-                                        <th>Excepcion</th>
-                                        <th data-hide="phone,tablet"><i class="fa fa-fw fa-map-marker txt-color-blue hidden-md hidden-sm hidden-xs"></i> Maquina</th>
-                                        <th data-hide="phone,tablet">Mensaje</th>
-                                        <th data-hide="phone,tablet"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> Entidad</th>
-                                        <th data-hide="phone,tablet"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> Usuario</th>
-                                        <th data-hide="phone,tablet"><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> Objeto</th>
-                                    </tr>
 
-                                  
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.LogEntrys)
-                                    {
+
+                            <div class="widget-body no-padding">
+                                <table id="datatable_fixed_column" class="table table-striped table-bordered table-hover" width="100%">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.MachineIP)
-                                               
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.LogDate)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.ApplicationName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.ExceptionTrace)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.MachineName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Message)
-                                            </td>
-                                            <td >
-                                                @Html.DisplayFor(modelItem => item.ObjectName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.UserName)
-                                            </td>
-                                            <td>
-
-
-                                                @Html.ActionLink("Detalle", "Create", "ConsultasLogs", new { id = item.LogEntryId }, new { @class = "dialog-window btn btn-info" })
-
-                                            
-                                            </td>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th class="hasinput">
+                                                <input type="text" class="form-control" placeholder="Buscar" />
+                                            </th>
+                                            <th>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th data-hide="phone">@Html.DisplayNameFor(model => model.MachineIP)</th>
+                                            <th data-hide="phone"> @Html.DisplayNameFor(model => model.LogLevelId)</th>
+                                            <th data-hide="phone">@Html.DisplayNameFor(model => model.LogCategoryId)</th>
+                                            <th data-class="expand"> @Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().LogDate)</th>
+                                            <th data-hide="phone">@Html.DisplayNameFor(model => model.ApplicationName)</th>
+                                            <th data-hide="phone">@Html.DisplayNameFor(model => model.LogEntrys.FirstOrDefault().ExceptionTrace)</th>
+                                            <th data-hide="phone,tablet"> @Html.DisplayNameFor(model => model.MachineName)</th>
+                                            <th >@Html.DisplayNameFor(model => model.Message)</th>
+                                            <th data-hide="phone,tablet"> @Html.DisplayNameFor(model => model.ObjectName)</th>
+                                            <th data-hide="phone,tablet"> @Html.DisplayNameFor(model => model.UserName)</th>
+                                            <th data-hide="phone,tablet"> </th>
                                         </tr>
 
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.LogEntrys)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.MachineIP)
+
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.LogLevel.Name)
+
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.LogCategory.Name)
+
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.LogDate)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.ApplicationName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.ExceptionTrace)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.MachineName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Message)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.ObjectName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.UserName)
+                                                </td>
+                                                <td>
+
+                                                    @Html.ActionLink("Detalle", "Create", "ConsultasLogs", new { id = item.LogEntryId }, new { @class = "dialog-window btn btn-info" })
+
+                                                </td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
 
                         }
                         <!-- end widget content -->
@@ -307,169 +354,19 @@
          
 @section Scripts {
 
-    <script type="text/javascript">
 
-    // DO NOT REMOVE : GLOBAL FUNCTIONS!
 
+<script src='~/lib/select2/dist/js/select2.min.js'></script>
+<script src='~/lib/select2/dist/js/i18n/es.js'></script>
+<script src='~/js/site.js'></script>
+<script type="text/javascript">
     $(document).ready(function () {
+        Init_Select2();
+    });
+</script>
 
-        /* // DOM Position key index //
 
-        l - Length changing (dropdown)
-        f - Filtering input (search)
-        t - The Table! (datatable)
-        i - Information (records)
-        p - Pagination (paging)
-        r - pRocessing
-        < and > - div elements
-        <"#id" and > - div with an id
-        <"class" and > - div with a class
-        <"#id.class" and > - div with an id and class
-
-        Also see: http://legacy.datatables.net/usage/features
-        */
-
-        /* BASIC ;*/
-        var responsiveHelper_dt_basic = undefined;
-        var responsiveHelper_datatable_fixed_column = undefined;
-        var responsiveHelper_datatable_col_reorder = undefined;
-        var responsiveHelper_datatable_tabletools = undefined;
-
-        var breakpointDefinition = {
-            tablet: 1024,
-            phone: 480
-        };
-
-        $('#dt_basic').dataTable({
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
-                "t" +
-                "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-            "autoWidth": true,
-            "preDrawCallback": function () {
-                // Initialize the responsive datatables helper once.
-                if (!responsiveHelper_dt_basic) {
-                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
-                }
-            },
-            "rowCallback": function (nRow) {
-                responsiveHelper_dt_basic.createExpandIcon(nRow);
-            },
-            "drawCallback": function (oSettings) {
-                responsiveHelper_dt_basic.respond();
-            }
-        });
-
-        /* END BASIC */
-
-        /* COLUMN FILTER  */
-        var otable = $('#datatable_fixed_column').DataTable({
-            //"bFilter": false,
-            //"bInfo": false,
-            //"bLengthChange": false
-            //"bAutoWidth": false,
-            //"bPaginate": false,
-            //"bStateSave": true // saves sort state using localStorage
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6 hidden-xs'f><'col-sm-6 col-xs-12 hidden-xs'<'toolbar'>>r>" +
-                    "t" +
-                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-xs-12 col-sm-6'p>>",
-            "autoWidth": true,
-            "preDrawCallback": function () {
-                // Initialize the responsive datatables helper once.
-                if (!responsiveHelper_datatable_fixed_column) {
-                    responsiveHelper_datatable_fixed_column = new ResponsiveDatatablesHelper($('#datatable_fixed_column'), breakpointDefinition);
-                }
-            },
-            "rowCallback": function (nRow) {
-                responsiveHelper_datatable_fixed_column.createExpandIcon(nRow);
-            },
-            "drawCallback": function (oSettings) {
-                responsiveHelper_datatable_fixed_column.respond();
-            }
-
-        });
-
-        // custom toolbar
-        $("div.toolbar").html('<div class="text-right"><img src="/img/logo.png" alt="SmartAdmin" style="width: 111px; margin-top: 3px; margin-right: 10px;"></div>');
-
-        // Apply the filter
-        $("#datatable_fixed_column thead th input[type=text]").on('keyup change', function () {
-
-            otable
-                .column($(this).parent().index() + ':visible')
-                .search(this.value)
-                .draw();
-
-        });
-        /* END COLUMN FILTER */
-
-        /* COLUMN SHOW - HIDE */
-        $('#datatable_col_reorder').dataTable({
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'C>r>" +
-                    "t" +
-                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
-            "autoWidth": true,
-            "preDrawCallback": function () {
-                // Initialize the responsive datatables helper once.
-                if (!responsiveHelper_datatable_col_reorder) {
-                    responsiveHelper_datatable_col_reorder = new ResponsiveDatatablesHelper($('#datatable_col_reorder'), breakpointDefinition);
-                }
-            },
-            "rowCallback": function (nRow) {
-                responsiveHelper_datatable_col_reorder.createExpandIcon(nRow);
-            },
-            "drawCallback": function (oSettings) {
-                responsiveHelper_datatable_col_reorder.respond();
-            }
-        });
-
-        /* END COLUMN SHOW - HIDE */
-
-        /* TABLETOOLS */
-        $('#datatable_tabletools').dataTable({
-
-            // Tabletools options:
-            //   https://datatables.net/extensions/tabletools/button_options
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-6 hidden-xs'T>r>" +
-                    "t" +
-                    "<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>",
-            "oTableTools": {
-                "aButtons": [
-                "copy",
-                "csv",
-                "xls",
-                   {
-                       "sExtends": "pdf",
-                       "sTitle": "SmartAdmin_PDF",
-                       "sPdfMessage": "SmartAdmin PDF Export",
-                       "sPdfSize": "letter"
-                   },
-                   {
-                       "sExtends": "print",
-                       "sMessage": "Generated by SmartAdmin <i>(press Esc to close)</i>"
-                   }
-                ],
-                "sSwfPath": "/js/plugin/datatables/swf/copy_csv_xls_pdf.swf"
-            },
-            "autoWidth": true,
-            "preDrawCallback": function () {
-                // Initialize the responsive datatables helper once.
-                if (!responsiveHelper_datatable_tabletools) {
-                    responsiveHelper_datatable_tabletools = new ResponsiveDatatablesHelper($('#datatable_tabletools'), breakpointDefinition);
-                }
-            },
-            "rowCallback": function (nRow) {
-                responsiveHelper_datatable_tabletools.createExpandIcon(nRow);
-            },
-            "drawCallback": function (oSettings) {
-                responsiveHelper_datatable_tabletools.respond();
-            }
-        });
-
-        /* END TABLETOOLS */
-
-    })
-
-    </script>
+   <script src="~/js/datatables/init.js"></script>
 
  
 

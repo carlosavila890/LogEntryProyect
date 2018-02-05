@@ -7,6 +7,8 @@ using bd.log.servicios.Interfaces;
 using bd.log.servicios.Servicios;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System;
+using bd.log.entidades.Utils;
+using bd.log.guardar.Inicializar;
 
 namespace bd.log.web
 {
@@ -25,18 +27,16 @@ namespace bd.log.web
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public async void ConfigureServices(IServiceCollection services)
+        public  void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
            
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IApiServicio, ApiServicio>();
 
-            var ServicioSeguridad = Configuration.GetSection("ServicioSeguridad").Value;
-            var ServiciosLog = Configuration.GetSection("ServiciosLog").Value;
-            var HostSeguridad = Configuration.GetSection("HostServicioSeguridad").Value;
-
-            await InicializarWebApp.Inicializar(ServiciosLog, new Uri (HostSeguridad));
+            WebApp.BaseAddressSeguridad = Configuration.GetSection("HostServicioSeguridad").Value;
+            AppGuardarLog.BaseAddress = Configuration.GetSection("HostServicioLog").Value;
+            WebApp.BaseAddress = Configuration.GetSection("HostServicioLog").Value;
 
         }
 
